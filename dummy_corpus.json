@@ -1,0 +1,22 @@
+[
+  {
+    "id": "doc1",
+    "text": "Alan Turing fue un matemático, lógico y científico de la computación británico. Es considerado uno de los padres de la ciencia de la computación y precursor de la informática moderna."
+  },
+  {
+    "id": "doc2",
+    "text": "Durante la Segunda Guerra Mundial, Alan Turing trabajó en Bletchley Park, el centro de criptoanálisis británico. Allí, dirigió la Hut 8, la sección encargada del criptoanálisis de la armada alemana."
+  },
+  {
+    "id": "doc3",
+    "text": "Turing desempeñó un papel crucial en la creación de la máquina Bombe, la cual ayudó a descifrar los mensajes encriptados por la máquina Enigma utilizada por los nazis."
+  },
+  {
+    "id": "doc4",
+    "text": "El Test de Turing, propuesto en 1950, es una prueba de la habilidad de una máquina para exhibir un comportamiento inteligente similar, o indistinguible, del de un humano."
+  },
+  {
+    "id": "doc5",
+    "text": "La arquitectura RAG (Retrieval-Augmented Generation) mejora la precisión de los modelos de lenguaje al buscar contexto relevante en bases de datos externas antes de generar una respuesta."
+  }
+]

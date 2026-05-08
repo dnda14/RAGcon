@@ -1,0 +1,7 @@
+chromadb
+sentence-transformers
+neo4j
+python-dotenv
+ollama
+pandas
+scikit-learn
