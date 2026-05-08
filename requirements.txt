@@ -5,3 +5,5 @@ python-dotenv
 ollama
 pandas
 scikit-learn
+spacy
+xgboost
