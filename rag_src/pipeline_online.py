@@ -20,10 +20,12 @@ NEO4J_PASSWORD = "password"
 # Configuración del LLM
 OLLAMA_MODEL = "llama3"
 
-# Prompt final de generación
+# Prompt final de generación (Anti-Alucinación Estricto)
 GENERATION_PROMPT = """
-Responde la [PREGUNTA] del usuario utilizando ÚNICAMENTE la información provista en el siguiente [CONTEXTO].
-Si el contexto no contiene la respuesta, responde "No tengo suficiente información para responder".
+Eres un asistente extremadamente estricto. Tu única tarea es responder la [PREGUNTA] basándote EXCLUSIVAMENTE en el [CONTEXTO] proporcionado.
+REGLA CRÍTICA: Tienes estrictamente prohibido usar tu conocimiento pre-entrenado o agregar cualquier dato que no esté explícitamente escrito en el [CONTEXTO].
+Si agregas nombres, fechas, lugares o detalles que no aparecen en el contexto, tu respuesta será considerada incorrecta.
+Si el [CONTEXTO] no contiene información suficiente para responder, debes responder ÚNICAMENTE: "No tengo suficiente información para responder".
 
 [CONTEXTO]:
 {context}
@@ -165,8 +167,8 @@ if __name__ == "__main__":
     pipeline = RAGOnlinePipeline()
     
     try:
-        # Pregunta de prueba integral
-        pregunta = "¿Qué relación tiene Alan Turing con Bletchley Park?"
+        # Pregunta de prueba integral con múltiples entidades
+        pregunta = "¿Qué relación existe entre Alan Turing, Bletchley Park y la sección Hut 8?"
         pipeline.query(pregunta)
     finally:
         pipeline.close()

@@ -57,3 +57,23 @@ share/python-wheels/
 # SO (Mac/Windows)
 .DS_Store
 Thumbs.db
+
+
+gantt.html
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Testing y Cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+
+resumen_tiempos.md
