@@ -134,6 +134,9 @@ def main():
     
     print(f"\nIniciando Grid Search sobre {len(qa_data)} consultas...")
     
+    with open('llm_entities.json', 'r', encoding='utf-8') as f:
+        llm_entities = json.load(f)
+
     # Solo procesaremos las primeras 10 preguntas para no hacer el JSON gigantesco en la prueba
     # Puedes quitar el [:10] después si quieres correr todo el dataset
     for i, item in enumerate(qa_data):
@@ -141,8 +144,27 @@ def main():
         pregunta = item.get("question", "")
         print(f"\n[Q {i+1}] {pregunta}")
         
-        # 1. Buscar Nodos Semilla
-        seed_nodes, query_emb = engine.find_seed_nodes(pregunta, n_seeds=2)
+        query_emb = engine.model.encode(pregunta).tolist()
+        seed_nodes = set()
+        
+        # 1A. Buscar semillas usando la pregunta completa (para contextos largos)
+        res_full = engine.collection.query(query_embeddings=[query_emb], n_results=2)
+        if res_full['metadatas'] and len(res_full['metadatas'][0]) > 0:
+            for meta in res_full['metadatas'][0]:
+                if meta and 'nombre_sujeto' in meta:
+                    seed_nodes.add(meta['nombre_sujeto'])
+        
+        # 1B. Buscar semillas usando las entidades extraídas por el LLM (para francotirador específico)
+        entities = llm_entities.get(q_id, [])
+        for ent in entities:
+            ent_emb = engine.model.encode(ent).tolist()
+            res_ent = engine.collection.query(query_embeddings=[ent_emb], n_results=1)
+            if res_ent['metadatas'] and len(res_ent['metadatas'][0]) > 0:
+                for meta in res_ent['metadatas'][0]:
+                    if meta and 'nombre_sujeto' in meta:
+                        seed_nodes.add(meta['nombre_sujeto'])
+                        
+        seed_nodes = list(seed_nodes)
         
         if not seed_nodes:
             print("  -> No se encontraron nodos semilla en ChromaDB. Saltando...")

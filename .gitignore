@@ -92,4 +92,12 @@ recomendaciones.txt
 contextos_recuperados.json
 eval_check.py
 
+llm_entities.json
+check_pruning.py
+README_Evolucion_Busqueda.md
 
+rag_src/gemini_extractor.py
+rag_src/medir_tokens_gemini.py
+rag_src/baseline_naive_rag.py
+
+test_imports.py
