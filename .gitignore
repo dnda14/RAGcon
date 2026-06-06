@@ -89,4 +89,7 @@ rag_src/extract_clean_triplet.py
 rag_src/cypher_queries.py
 
 recomendaciones.txt
+contextos_recuperados.json
+eval_check.py
+
 

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "ww2_001",
+    "question": "When did World War II officially begin with the invasion of Poland?",
+    "answer": "September 1, 1939",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_002",
+    "question": "Who led the National Socialist German Workers' (Nazi) Party to power in 1933?",
+    "answer": "Adolf Hitler",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_003",
+    "question": "What was the ultimate goal of Hitler's policy in eastern Europe?",
+    "answer": "To secure living space for the German master race",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_004",
+    "question": "Which act made it unlawful for the United States to trade with belligerents before the war?",
+    "answer": "The Neutrality Act of 1937",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_005",
+    "question": "What was the maximum size of the peacetime Army allowed by the National Defense Act of 1920?",
+    "answer": "280,000",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_006",
+    "question": "Who took over as Chief of Staff of the U.S. Army in 1939?",
+    "answer": "General George C. Marshall",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_007",
+    "question": "Which country did Japan invade in 1931, beginning their expansion in Asia?",
+    "answer": "Manchuria",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_008",
+    "question": "When did the Germans enter Paris during the Battle of France?",
+    "answer": "June 14, 1940",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_009",
+    "question": "What legendary battle drove the Luftwaffe from the daytime skies from July to October 1940?",
+    "answer": "The Battle of Britain",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_010",
+    "question": "Who commanded the German troops sent to aid the Italians in North Africa?",
+    "answer": "Lt. Gen. Erwin Rommel",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_011",
+    "question": "What event pushed the United States into the struggle of World War II on December 7, 1941?",
+    "answer": "The Japanese attack on the American naval base at Pearl Harbor",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_012",
+    "question": "Which act gave the US President authority to sell, transfer, or lease war goods to vital countries?",
+    "answer": "The Lend-Lease Act",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_013",
+    "question": "Who was the Prime Minister of Britain that suggested Anglo-American landings in North Africa?",
+    "answer": "Winston S. Churchill",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_014",
+    "question": "Who commanded the Allied invasion of North Africa?",
+    "answer": "Lt. Gen. Dwight D. Eisenhower",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_015",
+    "question": "Where did the first U.S. troops arrive in January 1942 before going into action against the Axis?",
+    "answer": "The British Isles",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_016",
+    "question": "Which German Field Marshal was trapped in North Africa between Eisenhower and Montgomery?",
+    "answer": "Erwin Rommel",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_017",
+    "question": "Who commanded the U.S. II Corps during the final drive in Tunisia?",
+    "answer": "Maj. Gen. George S. Patton",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_018",
+    "question": "In what month and year did the Axis resistance in Africa finally end?",
+    "answer": "May 1943",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_019",
+    "question": "What major Italian island was the first target for the Allies in the Mediterranean after Africa?",
+    "answer": "Sicily",
+    "dataset": "WW2_Corpus"
+  },
+  {
+    "id": "ww2_020",
+    "question": "On what date did the Allied troops finally enter Rome?",
+    "answer": "June 4, 1944",
+    "dataset": "WW2_Corpus"
+  }
+]

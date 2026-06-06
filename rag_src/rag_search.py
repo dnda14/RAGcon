@@ -11,7 +11,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 # Configuración de Rutas
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-QA_FILE = os.path.join(BASE_DIR, 'qa_real.json')
+QA_FILE = os.path.join(BASE_DIR, 'qa_ww2.json')
 OUTPUT_FILE = os.path.join(BASE_DIR, 'contextos_recuperados.json')
 CHROMA_DB_DIR = os.path.join(BASE_DIR, 'chroma_db')
 
@@ -45,17 +45,19 @@ class DagRagSearchEngine:
     def close(self):
         self.driver.close()
 
-    def find_seed_node(self, query_text):
-        """Paso 1: Busca el nodo de entrada en el espacio semántico de ChromaDB."""
+    def find_seed_nodes(self, query_text, n_seeds=2):
+        """Paso 1: Busca múltiples nodos de entrada en el espacio semántico de ChromaDB."""
         query_emb = self.model.encode(query_text).tolist()
         results = self.collection.query(
             query_embeddings=[query_emb],
-            n_results=1
+            n_results=n_seeds
         )
+        seeds = []
         if results['metadatas'] and len(results['metadatas'][0]) > 0:
-            return results['metadatas'][0][0]['nombre_sujeto'], query_emb
-        return None, query_emb
-
+            for meta in results['metadatas'][0]:
+                if meta and 'nombre_sujeto' in meta:
+                    seeds.append(meta['nombre_sujeto'])
+        return seeds, query_emb
     def run_adaptive_bfs(self, seed_node, query_emb, k, theta):
         """Pasos 2 a 5: Ejecuta el recorrido topológico adaptativo en Neo4j."""
         core_edges_ids = set()
@@ -63,9 +65,9 @@ class DagRagSearchEngine:
         
         with self.driver.session() as session:
             # PASO 2: Expansión Ciega (Niveles 1 a k)
-            # En DAG-RAG, buscamos vecinos salientes: -[*1..k]->
+            # Búsqueda BIDIRECCIONAL: seguir aristas en ambas direcciones
             query_core = f"""
-            MATCH p=(n:Entidad {{nombre: $seed}})-[*1..{k}]->(m:Entidad)
+            MATCH p=(n:Entidad {{nombre: $seed}})-[*1..{k}]-(m:Entidad)
             UNWIND relationships(p) AS r
             RETURN DISTINCT elementId(r) AS rel_id, r.descripcion AS desc
             """
@@ -81,7 +83,7 @@ class DagRagSearchEngine:
             # PASO 3 y 4: Evaluación de Frontera (Nivel k+1) y Descarte
             if theta > 0.0:
                 query_bound = f"""
-                MATCH p=(n:Entidad {{nombre: $seed}})-[*{k+1}]->(m:Entidad)
+                MATCH p=(n:Entidad {{nombre: $seed}})-[*{k+1}]-(m:Entidad)
                 UNWIND relationships(p) AS r
                 RETURN DISTINCT elementId(r) AS rel_id, r.descripcion AS desc, r.embedding AS emb
                 """
@@ -125,7 +127,7 @@ def main():
     engine = DagRagSearchEngine()
     
     # Parámetros de la Malla (Reducidos para prueba rápida)
-    k_values = [1, 2]
+    k_values = [1, 2,3,4]
     theta_values = [0.2, 0.5, 0.8, 1.0]
     
     resultados = []
@@ -139,29 +141,38 @@ def main():
         pregunta = item.get("question", "")
         print(f"\n[Q {i+1}] {pregunta}")
         
-        # 1. Buscar Nodo Semilla
-        seed_node, query_emb = engine.find_seed_node(pregunta)
+        # 1. Buscar Nodos Semilla
+        seed_nodes, query_emb = engine.find_seed_nodes(pregunta, n_seeds=2)
         
-        if not seed_node:
-            print("  -> No se encontró nodo semilla en ChromaDB. Saltando...")
+        if not seed_nodes:
+            print("  -> No se encontraron nodos semilla en ChromaDB. Saltando...")
             continue
             
-        print(f"  -> Nodo Semilla: {seed_node}")
+        print(f"  -> Nodos Semilla: {seed_nodes}")
         
         # 2. Iterar la malla
         for k in k_values:
             for theta in theta_values:
-                contexto = engine.run_adaptive_bfs(seed_node, query_emb, k, theta)
+                contextos_combinados = set()
+                for seed_node in seed_nodes:
+                    contexto_parcial = engine.run_adaptive_bfs(seed_node, query_emb, k, theta)
+                    # Evitar duplicar oraciones
+                    if contexto_parcial:
+                        for sentence in contexto_parcial.split(". "):
+                            if sentence.strip():
+                                contextos_combinados.add(sentence.strip() + ".")
+                
+                contexto_final = " ".join(list(contextos_combinados))
                 
                 # Guardar resultado crudo (antes del LLM)
                 resultados.append({
                     "query_id": q_id,
                     "pregunta": pregunta,
-                    "nodo_semilla": seed_node,
+                    "nodo_semilla": ", ".join(seed_nodes),
                     "k": k,
                     "theta": theta,
-                    "longitud_contexto": len(contexto),
-                    "contexto_recuperado": contexto
+                    "longitud_contexto": len(contexto_final),
+                    "contexto_recuperado": contexto_final
                 })
                 
     engine.close()

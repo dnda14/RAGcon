@@ -103,7 +103,8 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
             
             if sujeto not in sujetos_procesados and sujeto not in sujetos_a_insertar:
                 sujetos_a_insertar[sujeto] = fragmento_id
-                
+            if objeto not in sujetos_procesados and objeto not in sujetos_a_insertar:
+                sujetos_a_insertar[objeto] = fragmento_id
             tripletas_a_insertar.append({
                 "sujeto": sujeto, "relacion": relacion, "objeto": objeto,
                 "descripcion": descripcion, "fragmento_id": fragmento_id
