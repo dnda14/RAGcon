@@ -7,7 +7,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 
-# Inicializar spaCy y TF-IDF globalmente
 try:
     nlp = spacy.load("es_core_news_sm")
 except OSError:

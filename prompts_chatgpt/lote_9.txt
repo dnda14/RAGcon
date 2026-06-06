@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_80",
+    "text": "ralian militia and a few thousand U.S. airmen and service troops were his only resources. The Australian 7th Division soon returned from North Africa, where it had been ﬁghting the Germans, and two U.S. National Guard divisions, the 32d and the 41st, arrived in April and May. MacArthur had enough planes for two bomber squadrons and six ﬁghter squadrons. With only these forces, he set out to take Papua, while Admiral Nimitz, with forces almost equally slim, attacked Guadalcanal in the Solomon Islands. Of all the places where GIs fought in the Second World War, Guadalcanal and the Papuan peninsula may have been the worst. Though separated by 800 miles of ocean, the two were similarly un- healthful in terrain and climate. The weather on both is perpetually hot and wet; rainfall may exceed 200 inches a year, and during the rainy sea- son deluges, sometimes 8 to 10 inches of rain, occur daily. Temperatures in December reach the high eighties, and humidity seldom falls below 80 percent. Terr"
+  },
+  {
+    "id": "doc_ww2_81",
+    "text": " inches a year, and during the rainy sea- son deluges, sometimes 8 to 10 inches of rain, occur daily. Temperatures in December reach the high eighties, and humidity seldom falls below 80 percent. Terrain and vegetation are equally foreboding—dark, humid, 34 jungle-covered mountains inland, and evil-smelling swamps along the coasts. Insects abound. The soldiers and marines were never dry; most fought battles while wracked by chills and fever. For every two soldiers lost in battle, five were lost to disease—especially malaria, dengue, dysentery, or scrub typhus, a dangerous illness carried by jungle mites. Almost all suffered “jungle rot,” ulcers caused by skin disease. Guadalcanal lay at the southeast end of the Solomons, an island chain 600 miles long. Navy carriers and other warships supported the landings, but they could not provide clear air or naval superior- ity. The marines landed on 7 August 1942, without opposition, and quickly overran an important airfield. That was the last e"
+  },
+  {
+    "id": "doc_ww2_82",
+    "text": "orted the landings, but they could not provide clear air or naval superior- ity. The marines landed on 7 August 1942, without opposition, and quickly overran an important airfield. That was the last easy action on Guadalcanal. The carriers sailed away almost as soon as the marines went ashore. Then Japanese warships surprised the sup- porting U.S. naval vessels at the Battle of Savo Island and quickly sank four heavy cruisers and one destroyer. Ashore, the Japanese 35 “Bringing in the Ammo” by Joseph Hirsch. At Rendova in the Solomons, landing craft went aground in shallow water ﬁfty feet off- shore, forcing troops to wade ashore with equipment and ammunition. (Army Art Collection) Army fought furiously to regain the airfield. Through months of fighting the marines barely held on; some American admirals even thought that the beachhead would be lost. But gradually land-based aircraft were ferried in to provide air cover, and the Navy was able to return. As the Japanese continued to pour"
+  },
+  {
+    "id": "doc_ww2_83",
+    "text": "rican admirals even thought that the beachhead would be lost. But gradually land-based aircraft were ferried in to provide air cover, and the Navy was able to return. As the Japanese continued to pour men into the fight, Guadalcanal became a battle of attrition. Slowly American resources grew, while the Japanese were in- creasingly unable to make up their losses. In October soldiers of the Americal Division joined the battle; in November the Navy won a smashing victory in the waters offshore; and in early 1943 the Army’ s 25th Infantry Division was committed as well. Soldiers now outnumbered marines, and the ground forces were reorganized as the XIV Corps, commanded by Army Maj. Gen. Alexander M. Patch. As the Japanese lost the ability to supply their forces, enemy soldiers began to starve in the jungles. But not until February—six months after the initial landing—was Guadalcanal ﬁnally secured. Meanwhile, 800 miles to the west on the eastern peninsula of New Guinea, another shoestring"
+  },
+  {
+    "id": "doc_ww2_84",
+    "text": " in the jungles. But not until February—six months after the initial landing—was Guadalcanal ﬁnally secured. Meanwhile, 800 miles to the west on the eastern peninsula of New Guinea, another shoestring offensive began. Even after the Battle of the Coral Sea, the Japanese persisted in their efforts to take Port Moresby, a strategic town on New Guinea’ s southern coast. In late July 1942 they landed on the north coast of the huge, mountainous island and began to make their way south toward Port Moresby, across the towering Owen Stanley Mountains. Almost impassable in normal cir- cumstances, the trail they followed was a quagmire under constant rain. Supply became impossible; food ran short; fever and dysentery set in. Defeated just short of their goal by Australian defenses, the Japa- nese retreated. Meanwhile, MacArthur had decided to launch a coun- teroffensive against the fortified town of Buna and other Japanese- held positions on the northern coast. He sent portions of the Australian"
+  },
+  {
+    "id": "doc_ww2_85",
+    "text": "treated. Meanwhile, MacArthur had decided to launch a coun- teroffensive against the fortified town of Buna and other Japanese- held positions on the northern coast. He sent portions of the Australian 7th and U.S. 32d Divisions over the same mountainous jungle tracks earlier used by the Japanese. The result was the same. By the time his troops reached the northern coast, they were almost too debilitated to ﬁght. Around Buna and the nearby village of Gona the Japanese holed up in coconut-log bunkers that were impervious to small-arms and mortar ﬁre. The Americans lacked artillery, ﬂamethrowers, and tanks. While they struggled to dig the defenders out, malnutrition, fever, and jungle rot ravaged the troops. Like the troops on Guadalcanal, the Aussies and the men of the 32d barely held on. The Japanese also faced serious problems. Their commanders had to choose between strengthening Guadalcanal or Buna. Choos- ing Guadalcanal, they withdrew some support from the Buna garri- son. Growing A"
+  },
+  {
+    "id": "doc_ww2_86",
+    "text": "e Japanese also faced serious problems. Their commanders had to choose between strengthening Guadalcanal or Buna. Choos- ing Guadalcanal, they withdrew some support from the Buna garri- son. Growing American air power made it impossible for the Japa- 38 nese Navy to resupply their forces ashore, and their troops began to run short of food and ammunition. By December they were on the edge of starvation. Here the battle of attrition lasted longer, and not until January 1943 was the last Japanese resistance eliminated. Buna was costlier in casualties than Guadalcanal, and in some re- spects it was an even nastier campaign. The terrain was rougher; men who crossed the Owen Stanleys called that march their toughest expe- rience of the war. The Americans lacked almost everything necessary for success—weapons, proper clothing, insect repellents, and adequate food. “No more Bunas,” MacArthur pledged. For the rest of the war his policy was to bypass Japanese strongpoints. When the battles for G"
+  },
+  {
+    "id": "doc_ww2_87",
+    "text": "ccess—weapons, proper clothing, insect repellents, and adequate food. “No more Bunas,” MacArthur pledged. For the rest of the war his policy was to bypass Japanese strongpoints. When the battles for Guadalcanal and Buna began, the Americans had insufﬁcient strength to win. American strength increased as the battle went on. Over the next three years it would grow to overwhelming proportions. Twin Drives to American Victory As late as 1943 the American Joint Chiefs of Staff had not adopted a clear strategy for winning the war in the Paciﬁc. Early in the war they assumed that the burden of the land ﬁghting against Japan would fall on Chinese forces. The bulk of Japan’ s army was deployed in China, and Chinese leaders had an immense manpower pool to draw on. But supplying and training the Chinese Army proved to be an impossible task. Moreover, ﬁghting in China did not lead to any strategic objective. Instead, the hard-won successes in the Solomons and Papua and the growing strength of MacA"
+  },
+  {
+    "id": "doc_ww2_88",
+    "text": "ese Army proved to be an impossible task. Moreover, ﬁghting in China did not lead to any strategic objective. Instead, the hard-won successes in the Solomons and Papua and the growing strength of MacArthur’ s and Nimitz’ s forces gave the Joint Chiefs the means to strike at the Japanese in the Paciﬁc. They decided to launch two converging offensives toward the Japanese islands. Using Army ground forces, land-based air power, and a fleet of old battleships and cruisers, MacArthur would leapfrog across the north- ern coast of New Guinea toward the Philippines. Nimitz, using carrier- based planes and Marine and Army ground forces, would island-hop across the central Paciﬁc. The strategy was frankly opportunistic, and it left unanswered the questions of priorities and ﬁnal objectives. At the heart of the strategy were the developing techniques of amphibious warfare and tactical air power. Putting troops ashore in the face of a determined enemy had always been one of war’ s most dangerous a"
+  },
+  {
+    "id": "doc_ww2_89",
+    "text": "eart of the strategy were the developing techniques of amphibious warfare and tactical air power. Putting troops ashore in the face of a determined enemy had always been one of war’ s most dangerous and complicated maneuvers. World War II proved that the assault force needed air and sea supremacy and overwhelming combat power to be successful. Even then, dug-in defenders could take a heavy toll of infantry coming over the beaches. Special land- ing craft had to be built to bring tanks and artillery ashore with the 39 infantry, and both direct air support and effective naval gunﬁre were essential. MacArthur’ s leaps up the northern coast of New Guinea were measured precisely by the range of his fighter-bombers. The primary task of Nimitz’ s carriers was to support and defend the landing forces. As soon as possible after the landings, land-based planes were brought in to free the carriers for other operations. The islands of the central Paciﬁc had little resemblance to the fetid jungles "
+  }
+]

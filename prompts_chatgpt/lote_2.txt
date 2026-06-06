@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_10",
+    "text": "ler (the Munich Pact) and compelled Czechoslovakia to cede its frontier districts to Germany in order to secure “peace in our time.” Peace, however, was only an illusion. During March 1939 Hitler seized the rest of Czechoslovakia by force of arms and then turned 5 his attention to Poland. Although Britain and France had guaran- teed the integrity of Poland, Hitler and Josef Stalin, dictator of the Soviet Union, signed a secret, mutual nonaggression pact in Au- gust 1939. With the pact Stalin bought time to build up his strength at the expense of Britain and France, and Hitler gained a free hand to deal with Poland. When Hitler’ s army invaded Poland on 1 September 1939, World War II began. While German forces overran western Poland, Soviet troops en- tered from the east to claim their portion of that country. France and Britain declared war on Germany and mobilized their forces. The subsequent period of deceptive inactivity, lasting until spring, became known as the Phony War. Nothing "
+  },
+  {
+    "id": "doc_ww2_11",
+    "text": "ion of that country. France and Britain declared war on Germany and mobilized their forces. The subsequent period of deceptive inactivity, lasting until spring, became known as the Phony War. Nothing happened to indicate that World War II would differ signiﬁcantly in style or tempo from World War I. But the years since 1918 had brought important developments in the use of tanks. A number of students of war—the British Sir Basil Liddell Hart and J. F . C. Fuller, the Frenchman Charles de Gaulle, the American George S. Patton, and the Germans Oswald Lutz and Heinz Guderian—believed that armored vehicles held the key to restoring decision to the battlefield. But only the Germans con- ceived the idea of massing tanks in division-size units, with infantry, artillery, engineers, and other supporting arms mechanized and all moving at the same pace. Moreover, only Lutz and Guderian re- ceived the enthusiastic support of their government. In the spring of 1940 their theories were put to the tes"
+  },
+  {
+    "id": "doc_ww2_12",
+    "text": "ting arms mechanized and all moving at the same pace. Moreover, only Lutz and Guderian re- ceived the enthusiastic support of their government. In the spring of 1940 their theories were put to the test as Ger- man forces struck against Norway and Denmark in April; invaded the Netherlands, Belgium, and Luxembourg in May; and late in the same month broke through a hilly, wooded district in France. Their columns sliced through to the English Channel, cutting off British and French troops in northern France and Belgium. The French Army, plagued by low morale, divided command, and primitive com- munications, fell apart. The British evacuated their forces from Dunkerque with the loss of most of their equipment. The Germans entered Paris on 14 June, and the French government, defeatist and deeply divided politically, sued for an armistice. The success of the German Blitzkrieg forced the remaining combatants to rethink their doctrine and restructure their armies. With his forces occupying nort"
+  },
+  {
+    "id": "doc_ww2_13",
+    "text": " divided politically, sued for an armistice. The success of the German Blitzkrieg forced the remaining combatants to rethink their doctrine and restructure their armies. With his forces occupying northern France and with a puppet French government established in the south, Hitler launched the Luftwaffe against the airﬁelds and cities of England to pave the way for an invasion. Britain’ s survival hung by a thread. From July to Oc- tober 1940, while German landing barges and invasion forces waited on the Channel coasts, the Royal Air Force, greatly outnumbered, 6 drove the Luftwaffe from the daytime skies in the legendary Battle of Britain. At sea the British Navy, with increasing American coop- eration, fought a desperate battle against German submarine packs to keep the North Atlantic open. British pugnacity finally forced Hitler to abandon all plans to invade England. In February Hitler sent troops under Lt. Gen. Erwin Rommel to aid the Italians who were fighting against the British "
+  },
+  {
+    "id": "doc_ww2_14",
+    "text": "n. British pugnacity finally forced Hitler to abandon all plans to invade England. In February Hitler sent troops under Lt. Gen. Erwin Rommel to aid the Italians who were fighting against the British in North Africa. German forces coming to the aid of the Italians in the Balkans routed a British expedition in Greece, and German para- troopers seized the important island of Crete. Then, in June 1944, Hitler turned against his supposed ally, the Soviet Union, with the full might of the German armed forces. Armored spearheads thrust deep into Soviet territory, driving to- ward Leningrad, Moscow, and the Ukraine and cutting off entire Soviet armies. Despite tremendous losses, Russian military forces withdrew farther into the country and continued to resist. Nazi expectations of a quick victory evaporated, and the onset of winter caught the Germans unprepared. Thirty miles short of Moscow their advance ground to a halt, and the Soviets launched massive counterattacks. The Germans withstood "
+  },
+  {
+    "id": "doc_ww2_15",
+    "text": " evaporated, and the onset of winter caught the Germans unprepared. Thirty miles short of Moscow their advance ground to a halt, and the Soviets launched massive counterattacks. The Germans withstood the counterattacks and resumed their offensive the following spring. The Soviets, now locked in a titanic death struggle, faced the bulk of the German land forces—over two hundred divisions. The front stretched for 2,000 miles, from the Arctic Circle to the Black Sea. Soon casualties ran into the millions. Waging war with the implacable ruthlessness of totalitarian regimes, both sides committed wholesale atrocities—mistreatment of pris- oners of war, enslavement of civilian populations, and, in the case of the Jews, outright genocide. In the United States preparations for war moved slowly. General George C. Marshall took over as Chief of Staff in 1939, but the Army remained hard pressed simply to carry out its mission of defending the continental United States. Defending overseas possessio"
+  },
+  {
+    "id": "doc_ww2_16",
+    "text": "eral George C. Marshall took over as Chief of Staff in 1939, but the Army remained hard pressed simply to carry out its mission of defending the continental United States. Defending overseas possessions like the Philippines seemed a hopeless task. In early 1939, prompted by fears that a hostile power might be able to establish air bases in the Western Hemisphere, thus exposing the Panama Canal or continental United States to aerial attack, President Franklin D. Roosevelt launched a lim- ited preparedness campaign. The power of the Army Air Corps in- creased; Army and Navy leaders drafted a new series of war plans to deal with the threatening international situation. The focus of military policy changed from continental to hemisphere defense. After the outbreak of war in Europe the President proclaimed a limited emergency and authorized increases in the size of the Regu- lar Army and the National Guard. Congress amended the Neutrality Act to permit munitions sales to the French and Brit"
+  },
+  {
+    "id": "doc_ww2_17",
+    "text": "t proclaimed a limited emergency and authorized increases in the size of the Regu- lar Army and the National Guard. Congress amended the Neutrality Act to permit munitions sales to the French and British, and large or- ders from them stimulated retooling and laid the basis for the ex- pansion of war production in the future. The Army concentrated on equipping its regular forces as quickly as possible and in 1940 held the first large-scale corps and army maneuvers in American history. The rapid defeat of France and the possible collapse of Britain dramatically accelerated defense preparations. Roosevelt directed the transfer of large stocks of World War I munitions to France and Britain in the spring of 1940 and went further in September when he agreed to the transfer of fifty over-age destroyers to Britain in ex- change for bases in the Atlantic and Caribbean. In March 1941 Congress repealed some provisions of the Neutrality Act. Passage of the Lend-Lease Act, which gave the President "
+  },
+  {
+    "id": "doc_ww2_18",
+    "text": "royers to Britain in ex- change for bases in the Atlantic and Caribbean. In March 1941 Congress repealed some provisions of the Neutrality Act. Passage of the Lend-Lease Act, which gave the President authority to sell, transfer, or lease war goods to the government of any country whose 7 “Barrage Balloon” by Alexander Brook. The reported ability of bal- loons to interfere with low-level bombardment in Great Britain and Germany spurred the Army to develop a barrage balloon force for continental defense. (Army Art Collection) defenses he deemed vital to the defense of the United States, spelled the virtual end of neutrality. The President proclaimed that the United States would become the “arsenal of democracy.” In the spring of 1941 American and British military representatives held their first combined staff conferences to discuss strategy in the event of active U.S. participation in the war, which seemed increasingly likely to include Japan as well as Germany. The staffs agreed that i"
+  },
+  {
+    "id": "doc_ww2_19",
+    "text": "irst combined staff conferences to discuss strategy in the event of active U.S. participation in the war, which seemed increasingly likely to include Japan as well as Germany. The staffs agreed that if the United States entered the war the Allies should concentrate on the defeat of Germany first. The President authorized active naval patrols in the western half of the Atlantic, and in July, American troops took the place of British forces guarding Iceland. Meanwhile, General Marshall and Secretary of War Henry L. Stimson made plans to expand the Army to 1.5 million men. On 27 August 1940, Congress approved inducting the National Guard into federal service and calling up the reserves. A few weeks later the lawmakers passed the Selective Service and Training Act, the first peacetime draft in American history. By mid-1941 the Army had achieved its planned strength, with 27 infantry, 5 armored, and 2 cav- alry divisions; 35 air groups; and a host of support units. But it re- mained far fro"
+  }
+]

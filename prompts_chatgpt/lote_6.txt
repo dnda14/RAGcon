@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_50",
+    "text": " border halted on 25 September due to shortages of gasoline and other critical supplies. Resuming the offen- sive in November, Patton’ s men fought for two bloody weeks around the fortress town of Metz, ultimately winning bridgeheads over the Saar River and probing the Siegfried Line. In the south the U.S. Sev- enth Army and the First French Army fought their way through the freezing rain and snow of the V osges Mountains to break out onto the Alsatian plain around Strasbourg, becoming the only Allied armies to reach the Rhine in 1944. But there were no strategic objectives di- rectly east of Strasbourg, and a pocket of tough German troops re- mained on the west bank, dug in around the old city of Colmar. The attacks by the U.S. First and Ninth Armies toward the Roer River were extremely difﬁcult. The Huertgen Forest through which 22 they moved was thickly wooded, cut by steep defiles, fire breaks, and trails. The Germans built deep, artillery-proof log bunkers, sur- rounded by ﬁghting"
+  },
+  {
+    "id": "doc_ww2_51",
+    "text": "ifﬁcult. The Huertgen Forest through which 22 they moved was thickly wooded, cut by steep defiles, fire breaks, and trails. The Germans built deep, artillery-proof log bunkers, sur- rounded by ﬁghting positions. They placed thousands of mines in the forest. In addition, they felled trees across the roads and wired, mined, and booby-trapped them; and registered their artillery, mor- tars, and machine guns on the roadblocks. Tree-high artillery bursts, spewing thousands of lethal splinters, made movement on the forest floor difficult. Armor had no room to maneuver. T wo months of bloody, close-quarters fighting in mud, snow, and cold was devastat- ing to morale. Parts of at least three U.S. divisions, pushed beyond all human limits, experienced breakdowns of cohesion and discipline. The Battle of the Bulge While the Allies bludgeoned their way into the border marches of the Reich, Hitler carefully husbanded Germany’ s last reserves of tanks and infantry for a desperate attempt to reverse"
+  },
+  {
+    "id": "doc_ww2_52",
+    "text": "le of the Bulge While the Allies bludgeoned their way into the border marches of the Reich, Hitler carefully husbanded Germany’ s last reserves of tanks and infantry for a desperate attempt to reverse the situation in the west. On 16 December powerful German forces struck the lightly held sector of the First Army front south of Monschau in the Ardennes. German armored spearheads drove toward the Meuse River, aiming at Antwerp. Aided by bad weather, a variety of deceptive measures, and the failure of Allied intelligence correctly to interpret the signs of an impending attack, they achieved complete surprise. Elements of five U.S. divisions plus support troops fell back in confusion. T wo reg- iments of the 106th Infantry Division, cut off and surrounded atop the mountainous Schnee Eiffel, surrendered after only brief ﬁghting—the largest battlefield surrender of U.S. troops in World War II. Partly as a result of the decision to continue attacking throughout the autumn, U.S. forces were s"
+  },
+  {
+    "id": "doc_ww2_53",
+    "text": "urrendered after only brief ﬁghting—the largest battlefield surrender of U.S. troops in World War II. Partly as a result of the decision to continue attacking throughout the autumn, U.S. forces were spread thin in areas such as the Ar- dennes, and the Americans had few reserves to meet the attack. SHAEF immediately ordered available units into the threatened area, sending an airborne division into the important communications cen- ter of Bastogne. By 18 December the magnitude of the German effort was clear, and Eisenhower ordered Patton’ s Third Army to disengage from its offensive toward the Saar and to attack the enemy’ s southern ﬂank. Scattered American units, ﬁghting desperate rearguard actions, disrupted the German timetable, obstructing or holding key choke points—road junctions, narrow deﬁles, and single-lane bridges across unfordable streams—to buy time. Defenders at the town of St. Vith held out for six days; V Corps troops at Elsenborn Ridge repelled fu- rious attacks, jammi"
+  },
+  {
+    "id": "doc_ww2_54",
+    "text": "rrow deﬁles, and single-lane bridges across unfordable streams—to buy time. Defenders at the town of St. Vith held out for six days; V Corps troops at Elsenborn Ridge repelled fu- rious attacks, jamming the northern shoulder of the enemy advance. To the south armored and airborne troops, although completely sur- 23 rounded and under heavy German attack, held Bastogne for the du- ration of the battle. German efforts to widen the southern shoulder of the bulge along the Sauer River came to nothing. Short of fuel, denied critical roadnets, hammered by air attacks, and confronted by American armor, the German spearheads recoiled short of the Meuse. Meanwhile, Patton had altered the Third Army’ s axis of advance and attacked northward, relieving Bastogne on 26 December. On 3 January First and Ninth Army troops and British forces launched attacks against the northern shoulder of the bulge. Meanwhile, a secondary German offensive, Operation NORD- WIND, failed in the south. Eisenhower had orde"
+  },
+  {
+    "id": "doc_ww2_55",
+    "text": "inth Army troops and British forces launched attacks against the northern shoulder of the bulge. Meanwhile, a secondary German offensive, Operation NORD- WIND, failed in the south. Eisenhower had ordered the Sixth Army Group to fall back, pulling out of Strasbourg. General de Gaulle, the French leader, was enraged. After heated negotiations, Allied troops remained in Strasbourg, and the German attack lost its momentum. By the end of January the Allies had retaken all the ground lost in both German offensives. The Battle of the Bulge was over. Just as the Allies’ August breakout had failed to achieve a war- winning decision, so, too, the German attempt to reenact its victory of June 1940 failed. The Allies, however, could make good their losses, while Hitler had squandered almost all his remaining armor and ﬁghter aircraft. To make matters worse for the Reich, the Sovi- ets on 12 January opened a large-scale offensive in Poland and East Prussia that carried their troops to within forty "
+  },
+  {
+    "id": "doc_ww2_56",
+    "text": "maining armor and ﬁghter aircraft. To make matters worse for the Reich, the Sovi- ets on 12 January opened a large-scale offensive in Poland and East Prussia that carried their troops to within forty miles of Berlin. Ger- man forces that survived the Ardennes fighting had to be hurriedly shifted eastward to meet the growing Russian threat. The Final Offensive With the elimination of the “bulge” and the repulse of NORD- WIND, the campaign in the west moved into its final phases. The Allies paused only briefly before resuming the offensive. Eisen- hower had earlier decided that his armies should advance to the Rhine all along its length before crossing; he wanted to shorten Al- lied lines, provide a defensible position in the event of further Ger- man counterattacks, and free troops to build up strong reserves. If Hitler persisted in defending every inch of German territory, most of the enemy’ s remaining forces would be destroyed west of the Rhine. Once across the river, American and Br"
+  },
+  {
+    "id": "doc_ww2_57",
+    "text": " up strong reserves. If Hitler persisted in defending every inch of German territory, most of the enemy’ s remaining forces would be destroyed west of the Rhine. Once across the river, American and British forces would be able to advance into Germany almost at will. Harmonizing conflicting British and American views remained one of Eisenhower’ s major problems. Rejecting British proposals to concentrate on one thrust north of the Ruhr under Montgomery’ s 24 leadership, Eisenhower planned concentric attacks from the north by the British 21 Army Group and the U.S. Ninth Army and from the south by the U.S. First Army. Meanwhile, the Third Army would drive straight across Germany, and the Seventh Army would turn southward into Bavaria. Because the United States now dom- inated the alliance, most of the significant tasks of the final cam- paign went to American commanders. First, a pocket of German resistance at Colmar had to be elimi- nated. Eisenhower assigned ﬁve additional U.S. division"
+  },
+  {
+    "id": "doc_ww2_58",
+    "text": "st of the significant tasks of the final cam- paign went to American commanders. First, a pocket of German resistance at Colmar had to be elimi- nated. Eisenhower assigned ﬁve additional U.S. divisions and 10,000 service troops to the effort. The Franco-American attack against the pocket began on 20 January and was over by early February. Mean- time, the Canadian First Army cleared the area between the Maas and Rhine Rivers. At the same time, the First Army advanced and ﬁnally seized the Roer River dams but found that the Germans had destroyed the controls. The resultant flooding delayed the Ninth Army’ s advance by two weeks. That attack finally began in late February and linked up with the Canadians, cutting off German forces facing the British. Meanwhile, the First Army’ s drive to the Rhine culminated in the capture of Cologne and on 7 March the seizure of an intact bridge at the town of Remagen. As American divisions poured into the bridgehead, the Third and Seventh Armies launche"
+  },
+  {
+    "id": "doc_ww2_59",
+    "text": "Rhine culminated in the capture of Cologne and on 7 March the seizure of an intact bridge at the town of Remagen. As American divisions poured into the bridgehead, the Third and Seventh Armies launched coordinated attacks to the south. On the 22d and the 25th, Third Army troops made assault crossings of the Rhine. On 23 March the British Second Army and the U.S. Ninth Army staged massive crossings in the Rees-Wesel–Dinslaken area, supported by the largest airborne landings of the war, while the Seventh Army crossed on the 26th near Worms. Now Allied columns fanned out across Germany, overrunning isolated pockets of resistance. While Montgomery’ s forces drove northward toward the great German ports of Bremen, Hamburg, and Luebeck, the Ninth Army advanced along the axis Muenster-Magdeburg. Ninth and First Army troops met on 1 April, encircling the industrial re- gion of the Ruhr and capturing 325,000 prisoners. The First Army continued eastward toward Kassel and Leipzig while the Third "
+  }
+]

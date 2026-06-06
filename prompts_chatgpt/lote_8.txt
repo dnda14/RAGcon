@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_70",
+    "text": "y devoid of natural resources to-feed its industries, looked overseas for supplies of strategic materials such as ores and petroleum. Before 1939 the United States was Japan’ s major sup- plier. But President Roosevelt and Secretary of State Cordell Hull shut off American supplies in an effort to force the Japanese to end hostilities against China. The Japanese had long coveted the re- source-rich British and Dutch colonies of Southeast Asia, and as the U.S. trade embargo tightened, the Japanese increasingly looked southward for raw materials and strategic resources. Only the United States stood in Japan’ s path. The U.S. Paciﬁc Fleet at Pearl Harbor was the only force capable of challenging Japan’ s navy, and American bases in the Philippines could threaten lines of communications between the Japanese home islands and the East Indies. Every oil tanker heading for Japan would have to pass by American-held Luzon. From these needs and constraints, Japan’ s 31 war plans emerged. First, it"
+  },
+  {
+    "id": "doc_ww2_71",
+    "text": " the Japanese home islands and the East Indies. Every oil tanker heading for Japan would have to pass by American-held Luzon. From these needs and constraints, Japan’ s 31 war plans emerged. First, its navy would neutralize the American fleet with a surprise attack on Pearl Harbor. Japan would also seize America’ s central Pacific bases at Guam and Wake islands and in- vade the Philippines. With American naval power crippled, Japan’ s military would be free to seize Burma, Malaya, Singapore, and the Dutch East Indies in a series of rapid amphibious operations. Japan would then establish a defensive ring around its newly conquered empire by fortifying islands in the south and the central Pacific. Japan’ s leaders were convinced that Americans, once involved in the European war, would be willing to negotiate peace in the Pacific. To block Japanese ambitions, the United States Army had scant resources. T wo small forces constituted the heart of the American land defenses in the Paciﬁc—the"
+  },
+  {
+    "id": "doc_ww2_72",
+    "text": "ling to negotiate peace in the Pacific. To block Japanese ambitions, the United States Army had scant resources. T wo small forces constituted the heart of the American land defenses in the Paciﬁc—the garrison in the Territory of Hawaii and General Douglas MacArthur’ s command in the Commonwealth of the Philippines. Both were peacetime organizations, whose days were given to rounds of ceremonies, inspections, and languid train- ing. Officers and their wives occupied evenings and weekends with rounds of social activities and golf, while the soldiers enjoyed more earthy pleasures in the bars and brothels of Honolulu or Manila. Yet these forces would face overwhelming odds in the event of war. The thousands of islands that comprised the Philippines lay 8,000 miles from the American west coast, but only 200 miles from Japanese-held Formosa. To defend them, General MacArthur had the equivalent of two divisions of regular troops—16,000 U.S. regu- lars and 12,000 Philippine Scouts. He could c"
+  },
+  {
+    "id": "doc_ww2_73",
+    "text": ", but only 200 miles from Japanese-held Formosa. To defend them, General MacArthur had the equivalent of two divisions of regular troops—16,000 U.S. regu- lars and 12,000 Philippine Scouts. He could call on additional thou- sands of Philippine militia, but they were untrained and ill equipped. Lt. Gen. Walter C. Short’ s Hawaiian command held 43,000 Army troops, including two infantry divisions, coast artillery, air corps, and support troops. Thus, in ground forces, the United States had the equivalent of three divisions in the Paciﬁc to stand in the path of the Imperial Japanese Army. American strategists had developed two plans to counter possible Japanese aggression—one for the Navy and another for the Army. The Navy planned to fight across the central Pacific for a climactic and decisive battle with the Japanese ﬂeet. The Army saw no way to save the Philippines and favored a strategic defense along an Alaska- Hawaii-Panama line. Writing off the Philippines, however, was po- litical"
+  },
+  {
+    "id": "doc_ww2_74",
+    "text": "ve battle with the Japanese ﬂeet. The Army saw no way to save the Philippines and favored a strategic defense along an Alaska- Hawaii-Panama line. Writing off the Philippines, however, was po- litically impossible, and as war drew closer frantic efforts were made to strengthen the commonwealth’ s defenses. Both MacArthur and Army Chief of Staff General George C. Marshall overestimated the chances of their own forces and underestimated the strength and ability of the Japanese. In particular, they grossly exaggerated the 32 power of a new weapon, the B–17 “Flying Fortress” bomber, a few of which were rushed to the Philippines in the last days of peace. All of the efforts proved to be too little, too late. The Japanese war plan worked to perfection. On 7 December 1941, Japan paralyzed the Paciﬁc Fleet in its attack on Pearl Harbor. In the Philippines, Jap- anese fliers destroyed most of MacArthur’ s air force on the ground. Freed of effective opposition, Japanese forces took Burma, Malaya"
+  },
+  {
+    "id": "doc_ww2_75",
+    "text": "iﬁc Fleet in its attack on Pearl Harbor. In the Philippines, Jap- anese fliers destroyed most of MacArthur’ s air force on the ground. Freed of effective opposition, Japanese forces took Burma, Malaya, Singapore, and the Dutch East Indies in rapid succession. By March 1942 the Japanese had conquered an empire. Only MacArthur’ s be- leaguered American-Filipino army still held out on the main Philip- pine island of Luzon. A Japanese army had landed in northern Luzon on 22 December 1941 and began to push southward toward Manila. At first, Mac- Arthur was inclined to meet the Japanese on the beaches. But he had no air force, and the U.S. Navy’ s tiny Asiatic ﬂeet was in no po- sition to challenge Japan at sea. The U.S. regulars and Philippine Scouts were excellent troops but were outnumbered and without air support. Giving up his initial strategy of defeating the enemy on the beaches, MacArthur decided to withdraw to the Bataan Peninsula. There he could pursue a strategy of defense and del"
+  },
+  {
+    "id": "doc_ww2_76",
+    "text": "nd without air support. Giving up his initial strategy of defeating the enemy on the beaches, MacArthur decided to withdraw to the Bataan Peninsula. There he could pursue a strategy of defense and delay, shortening his lines and using the mountainous, jungle-covered terrain to his advan- tage. Perhaps he could even hold out long enough for a relief force to be mounted in the United States. But too many people crowded into Bataan, with too little food and ammunition. By March it was clear that help from the United States was not coming. Nevertheless, the American-Filipino force, wracked by dysentery and malaria, continued to ﬁght. In March President Roosevelt ordered MacArthur to escape to Australia. He left his command to Lt. Gen. Jonathan Wainwright and to Maj. Gen. Edward King, who on 9 April was forced to surrender the exhausted and starving Bataan force. Wainwright continued to resist on the small for- tiﬁed island of Corregidor in Manila Bay until 6 May under constant Japanese art"
+  },
+  {
+    "id": "doc_ww2_77",
+    "text": "April was forced to surrender the exhausted and starving Bataan force. Wainwright continued to resist on the small for- tiﬁed island of Corregidor in Manila Bay until 6 May under constant Japanese artillery and air bombardment. After Japanese troops stormed ashore on the island, Wainwright agreed to surrender Cor- regidor and all other troops in the islands. By 9 May 1942, the battle for the Philippines had ended, though many Americans and Filipinos took to the hills and continued a guerrilla war against the Japanese. The courageous defense of Bataan had a sad and ignominious end. Marching their prisoners toward camps in northern Luzon, the Japa- nese denied food and water to the sick and starving men. When the weakest prisoners began to straggle, guards shot or bayoneted them and threw the bodies to the side of the road. Japanese guards may 33 have killed 600 Americans and 10,000 Filipino prisoners. News of the Japanese attack on Pearl Harbor had outraged the American people; news of "
+  },
+  {
+    "id": "doc_ww2_78",
+    "text": "e bodies to the side of the road. Japanese guards may 33 have killed 600 Americans and 10,000 Filipino prisoners. News of the Japanese attack on Pearl Harbor had outraged the American people; news of the “Bataan Death March” ﬁlled them with bitter hatred. By May 1942 the Japanese had succeeded beyond their wildest expectations. A vast new empire had fallen into their hands so quickly, and at so little cost, that they were tempted to go further. If their forces could move into the Solomon Islands and the southern coast of New Guinea, they could threaten Australia and cut the American line of communications to MacArthur’ s base there. If they could occupy Midway Island, only 1,000 miles from Honolulu, they could force the American ﬂeet to pull back to the west coast. In Jap- anese overconﬁdence lay the seeds of Japan’ s ﬁrst major defeats. The Tide Turns Japanese fortunes turned sour in mid-1942. Their uninterrupted string of victories ended with history’ s first great carrier battles. I"
+  },
+  {
+    "id": "doc_ww2_79",
+    "text": "nce lay the seeds of Japan’ s ﬁrst major defeats. The Tide Turns Japanese fortunes turned sour in mid-1942. Their uninterrupted string of victories ended with history’ s first great carrier battles. In May 1942 the Battle of the Coral Sea halted a new Japanese offen- sive in the south Paciﬁc. A month later the Japanese suffered a dev- astating defeat at the Battle of Midway in the central Pacific. Now American and Australian forces were able to begin two small coun- teroffensives—one in the Solomons and the other on New Guinea’ s Papuan peninsula. The first featured the Marine Corps and the Army; the second, the Army and the Australian Allies. American resources were indeed slim. When MacArthur arrived in Australia in March 1942, he found, to his dismay, that he had little to command. Australian militia and a few thousand U.S. airmen and service troops were his only resources. The Australian 7th Division soon returned from North Africa, where it had been ﬁghting the Germans, and two U."
+  }
+]

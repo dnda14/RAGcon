@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_90",
+    "text": "ces. As soon as possible after the landings, land-based planes were brought in to free the carriers for other operations. The islands of the central Paciﬁc had little resemblance to the fetid jungles of Guadalcanal and New Guinea. Atolls like Tarawa or Kwa- jalein were necklaces of hard coral surrounding lagoons of sheltered water. Where the coral rose above water, small narrow islands took form. These bits of sand furnished little room for maneuver and fre- quently had to be assaulted frontally. Larger islands like Guam and Saipan were volcanic in origin, with rocky ridges to aid the defense; the shrapnel effect of shell bursts was multiplied by bits of shattered rock. 40 “Pim’s Jetty” by Frede Vida. The logistics of MacArthur’s leaps up the New Guinea coast sometimes posed greater difﬁculties than did the Japanese defenders. (Army Art Collection) In November 1943 Nimitz’ s island-hopping campaign began with his assaults on Betio in the Tarawa Atoll and at Makin a hundred miles north."
+  },
+  {
+    "id": "doc_ww2_91",
+    "text": "lties than did the Japanese defenders. (Army Art Collection) In November 1943 Nimitz’ s island-hopping campaign began with his assaults on Betio in the Tarawa Atoll and at Makin a hundred miles north. It was a costly beginning. Elements of the Army’ s 27th Infantry Division secured Makin with relative ease, but at Betio the 2d Marine Division encountered stubborn and deadly resistance. Naval gunﬁre and air attacks had failed to eliminate the deeply dug- in defenders, and landing craft grounded on reefs offshore, where they were destroyed by Japanese artillery. As costly as it was, the lessons learned there proved useful in future amphibious opera- tions. Like MacArthur, Nimitz determined to bypass strongly held islands and strike at the enemy’ s weak points. During January 1944 landings were made in the Marshalls at Kwajalein and Eniwetok followed by Guam and Saipan in the Mar- ianas during June and July. Because the Marianas were only 1,500 miles from Tokyo, the remaining Japanese car"
+  },
+  {
+    "id": "doc_ww2_92",
+    "text": "re made in the Marshalls at Kwajalein and Eniwetok followed by Guam and Saipan in the Mar- ianas during June and July. Because the Marianas were only 1,500 miles from Tokyo, the remaining Japanese carriers came out to ﬁght. The resulting Battle of the Philippine Sea was a disaster for the Japanese. In what U.S. Navy pilots called “the great Marianas turkey shoot,” Japanese carrier power was effectively eliminated. Almost as soon as the Marianas were cleared, the air forces began to prepare airfields to receive new heavy bombers, the B–29s. With a range exceeding 3,000 miles, B–29s could reach most Japa- nese cities, including Tokyo. In November 1944 the T wentieth Air Force began a strategic bombing campaign against Japan, which in- directly led to one of the bitterest island fights of the war. Tiny Iwo Jima, lying 750 miles southeast of Tokyo, was needed both as an auxiliary base for crippled B-29s returning from their bombing raids over Japan and as a base for long-range escort fight"
+  },
+  {
+    "id": "doc_ww2_93",
+    "text": " war. Tiny Iwo Jima, lying 750 miles southeast of Tokyo, was needed both as an auxiliary base for crippled B-29s returning from their bombing raids over Japan and as a base for long-range escort fighters. The fight for the five-mile-long island lasted five weeks, during February and March 1945, and cost more than 25,000 dead—almost 6,000 Amer- icans of the 4th and 5th Marine Divisions and 20,000 Japanese. While Nimitz crossed the central Paciﬁc, MacArthur pushed along the New Guinea coast, preparing for his return to the Philippines. Without carriers, his progress was slower but less costly than Nimitz’ s. After clearing the Buna area in January 1943, MacArthur spent the next year conquering northeastern New Guinea and the eight months that followed moving across the northern coast of Netherlands New Guinea to the island of Morotai. Because he had to cover his landings with land-based planes, he was limited to bounds of 200 miles or less on a line of advance almost 2,000 miles long. Fu"
+  },
+  {
+    "id": "doc_ww2_94",
+    "text": "erlands New Guinea to the island of Morotai. Because he had to cover his landings with land-based planes, he was limited to bounds of 200 miles or less on a line of advance almost 2,000 miles long. Furthermore, he had to build airﬁelds as he went. By October 1944 MacArthur was ready for a leap to the Philippines, but this objective was beyond the range of his planes. Nimitz loaned him Admiral William F . Halsey’ s heavy car- 41 riers, and, on 20 October 1944, MacArthur’ s Sixth Army landed on Leyte Island in the central Philippines. The Japanese reacted vigorously. For the ﬁrst time in the war they employed Kamikaze attacks, suicide missions ﬂown by young, half- trained pilots. And they used their last carriers as decoys to draw Halsey’ s carriers away from the beachheads. With Halsey out of the battle and the landing forces without air cover, the Japanese planned to use conventional warships to brush aside the remaining American warships and destroy the support vessels anchored off th"
+  },
+  {
+    "id": "doc_ww2_95",
+    "text": "of the battle and the landing forces without air cover, the Japanese planned to use conventional warships to brush aside the remaining American warships and destroy the support vessels anchored off the beaches. They almost succeeded. In the naval Battle of Leyte Gulf, the big guns of the big ships, not carrier planes, decided the battle. The Japanese naval forces were decimated. Japan no longer had an effective navy. As violent as they were, most island fights involved small units and were mercifully short. However, the last two major campaigns of the Paciﬁc war—Luzon and Okinawa—took on some of the char- acter of the war in Europe. They were long fights on larger land masses, with entire armies in sustained combat over the course of 42 “All Aboard for Home” by Joseph Hirsch. Despite wartime increases, Allied sealift capability remained inadequate to return Army forces home as fast as they would have liked. (Army Art Collection) several months. Japanese defenders on Luzon numbered 262,"
+  },
+  {
+    "id": "doc_ww2_96",
+    "text": "me increases, Allied sealift capability remained inadequate to return Army forces home as fast as they would have liked. (Army Art Collection) several months. Japanese defenders on Luzon numbered 262,000 under Lt. Gen. Tomoyuki Y amashita, perhaps the best field com- mander in the J apanese Army . Y amashita refused an open battle, knowing that superior firepower and command of the air would favor the Americans. Instead, he prepared defensive positions where his forces could deny the Americans strategic points like roads and airfields. He wanted to force the Americans to attack Japanese positions in a new battle of attrition. His plan worked. MacArthur’ s Sixth Army under Lt. Gen. Wal- ter Krueger landed on Luzon on 9 January 1945 and began the Army’ s longest land campaign in the Pacific. MacArthur’ s forces fought for almost seven months and took nearly 40,000 casualties before ﬁnally subduing the Japanese. The largest landings of Nimitz’ s central Paciﬁc drive were carried out on Ok"
+  },
+  {
+    "id": "doc_ww2_97",
+    "text": " MacArthur’ s forces fought for almost seven months and took nearly 40,000 casualties before ﬁnally subduing the Japanese. The largest landings of Nimitz’ s central Paciﬁc drive were carried out on Okinawa, only 300 miles from Japan, on 1 April 1945. Before the ﬁght was over three months later, the entire Tenth Field Army— four Army infantry divisions and two Marine divisions—had been deployed there. Like his counterpart on Luzon, the Japanese com- mander on Okinawa, Lt. Gen. Mitsuru Ushijima, refused to ﬁght on the beaches and instead withdrew into the rocky hills to force a bat- tle of attrition. Again the strategy worked. U.S. casualties were stag- gering, the largest of the Paciﬁc war. Over 12,000 American soldiers, sailors, and marines died during the struggle. At Okinawa the Japa- nese launched the greatest Kamikaze raids of the war, and the results were frightening—26 ships sunk and 168 damaged. Almost 40 per- cent of the American dead were sailors lost to Kamikaze attacks. When"
+  },
+  {
+    "id": "doc_ww2_98",
+    "text": "se launched the greatest Kamikaze raids of the war, and the results were frightening—26 ships sunk and 168 damaged. Almost 40 per- cent of the American dead were sailors lost to Kamikaze attacks. When the Luzon and Okinawa battles ended in July, the invasion of the southernmost Japanese island of Kyushu had already been or- dered by the Joint Chiefs. The date was set for 1 November 1945. Kyushu would furnish air and naval bases to intensify the air bom- bardment and strengthen the naval blockade around Honshu, the main island of Japan. A massive invasion in the Tokyo area was scheduled for 1 March 1946 if Japanese resistance continued. With the Okinawa experience fresh in their minds, many planners feared that the invasion of Japan would produce a bloodbath. In fact, Japan was already beaten. It was defenseless on the seas; its air force was gone; and its cities were being burned out by incendiary bombs. The atomic bombings of Hiroshima and Nagasaki on 6 and 9 August and the Soviet dec"
+  },
+  {
+    "id": "doc_ww2_99",
+    "text": "en. It was defenseless on the seas; its air force was gone; and its cities were being burned out by incendiary bombs. The atomic bombings of Hiroshima and Nagasaki on 6 and 9 August and the Soviet declaration of war on 8 August forced the lead- ers of Japan to recognize the inevitable. On 15 August 1945, Emperor Hirohito announced Japan’ s surrender to the Japanese people and ordered Japanese forces to lay down their ar ms. Despite their earlier 43 suicidal resistance, they immediately did so. With V–J Day—2 Septem- ber 1945—the greatest war in human history came to an end. Aftermath The United States emerged from the war with global military commitments that included the occupation of Germany and Japan and the oversight of Allied interests in liberated areas. Almost 13 million Americans were in uniform at the end of the war; over 8 mil- lion of them were soldiers. But the impulse was strong to follow the patterns of the past and dismantle this force. Families pressed the government to"
+  }
+]

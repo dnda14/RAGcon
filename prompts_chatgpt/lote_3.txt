@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_20",
+    "text": " American history. By mid-1941 the Army had achieved its planned strength, with 27 infantry, 5 armored, and 2 cav- alry divisions; 35 air groups; and a host of support units. But it re- mained far from ready to deploy overseas against well-equipped, ex- perienced, and determined foes. The United States Enters the W ar On 7 December 1941, while German armies were freezing be- fore Moscow, Japan suddenly pushed the United States into the struggle by attacking the American naval base at Pearl Harbor, Hawaii. Four days later Hitler declared war on the United States. President Roosevelt called on Congress for immediate and massive expansion of the armed forces. T wenty years of neglect and indif- ference, however, could not be overcome in a few days. Helpless as American garrisons in the Paciﬁc fell to the Japanese in the spring of 1942, military leaders in Washington worked fever- ishly to create a headquarters that could direct a distant war effort and to turn the fledgling ground and air"
+  },
+  {
+    "id": "doc_ww2_21",
+    "text": " fell to the Japanese in the spring of 1942, military leaders in Washington worked fever- ishly to create a headquarters that could direct a distant war effort and to turn the fledgling ground and air units into viable, balanced fighting forces. In early 1942 the Joint Chiefs of Staff emerged as a committee of the nation’ s military leaders to advise the President and to coordinate strategy with the British. In March the War De- partment General Staff was reorganized and the Army divided into three major commands: the Air Forces, Ground Forces, and Service Forces. Thirty-seven Army divisions were in some state of training, but only one was fully trained, equipped, and deployable by January 8 9 1942. Army planners of the time estimated that victory would re- quire an Army of nearly 9 million men, organized into 215 combat divisions, estimates that proved accurate regarding overall man- power but too ambitious for the 90 divisions that eventually were es- tablished and supported on far-f"
+  },
+  {
+    "id": "doc_ww2_22",
+    "text": "n men, organized into 215 combat divisions, estimates that proved accurate regarding overall man- power but too ambitious for the 90 divisions that eventually were es- tablished and supported on far-flung battlefields. Lt. Gen. Lesley J. McNair, head of Army Ground Forces and an ardent advocate of mobile war, oversaw the development of armored and airborne divisions. He directed the restructuring of existing or- ganizations as well, turning the old World War I “square” division based on four infantry regiments into a lighter, more maneuverable triangular division with three infantry regiments. A serious and con- tinuing shortage of Allied shipping space placed absolute limits on the size and capabilities of Army units. New tables of organization stressed leanness and mobility, sometimes at the expense of ﬁghting power and endurance. Billeting, training areas, and equipment were all in short supply. American industry had to support the nation’ s Al- lies as well as its own military expa"
+  },
+  {
+    "id": "doc_ww2_23",
+    "text": " the expense of ﬁghting power and endurance. Billeting, training areas, and equipment were all in short supply. American industry had to support the nation’ s Al- lies as well as its own military expansion. Britain needed large amounts of munitions and equipment; and lend-lease aid, including tens of thousands of trucks and other vehicles and equipment, played “Ex-Luxury Liner” by Barse Miller. The largest liners used by the Army, the British ships Queen Elizabethand Queen Mary, could each carry up to 15,000 troops. (Army Art Collection) 10 an important part in mechanizing the Soviet Army. Amphibious war- fare required large numbers of landing craft and support vessels, yet to be built. The ﬁrst U.S. troops arrived in the British Isles in January 1942, but nearly a year passed before they went into action against the Axis. Meanwhile, air power provided virtually the only means for the Allies to strike at Germany. The Royal Air Force began its air of- fensive against Germany in May 1942"
+  },
+  {
+    "id": "doc_ww2_24",
+    "text": "went into action against the Axis. Meanwhile, air power provided virtually the only means for the Allies to strike at Germany. The Royal Air Force began its air of- fensive against Germany in May 1942, and on 4 July the ﬁrst Amer- ican crews participated in air raids against the Continent. In early 1942 British and American leaders reafﬁrmed the prior- ity of the European theater. General Marshall argued for an imme- diate buildup of American forces in Great Britain, a possible diver- sionary attack on the Continent in the fall, and a definite full-scale invasion in 1943. The British greeted this program with caution. Re- membering the enormous casualties of World War I, they preferred to strike at German power in the Mediterranean, rather than risk a direct confrontation in haste. Although acknowledging the eventual necessity for an invasion of France, they hoped to defer it until much later. Instead, Prime Minister Winston S. Churchill suggested Anglo- American landings in North Afri"
+  },
+  {
+    "id": "doc_ww2_25",
+    "text": "h acknowledging the eventual necessity for an invasion of France, they hoped to defer it until much later. Instead, Prime Minister Winston S. Churchill suggested Anglo- American landings in North Africa, bringing the French armies in France’ s colonies there back into the war on the side of the Allies and aiding the British in their ﬁght against the Italians and the forces of German Field Marshal Erwin Rommel. Months of lively debate fol- lowed, but ultimately President Roosevelt directed General Mar- shall to plan and carry out amphibious landings on the coast of North Africa before the end of 1942. The North African Campaign Marshall ordered Lt. Gen. Dwight D. Eisenhower, then in Eng- land, to take command of the invasion. Meeting the November deadline required improvisation of every kind Army troops were hurriedly trained in amphibious warfare. Technicians modified com- mercial vessels to serve as landing ships. While General Eisenhower monitored operations from Gibraltar, American "
+  },
+  {
+    "id": "doc_ww2_26",
+    "text": "d Army troops were hurriedly trained in amphibious warfare. Technicians modified com- mercial vessels to serve as landing ships. While General Eisenhower monitored operations from Gibraltar, American forces, convoyed directly from the United States, landed along the Atlantic coast of French Morocco, near Casablanca. Meanwhile, American and Brit- ish troops sailing from England landed in Algeria. Despite efforts to win support among French military officers in North Africa, some fighting occurred. Nevertheless negotiations soon led to a cease- fire, and French units joined the Allied forces. While the Allies tightened their grip on Morocco and Algeria, their troops raced to reach strategic positions in neighboring Tunisia. A 11 month earlier the British in Egypt under Lt. Gen. Sir Bernard L. Mont- gomery had mounted a powerful attack on the Germans at El Alamein, sending Rommel and his German-Italian Panzer Army reeling back into Libya. If strong Allied forces could reach the coast of T"
+  },
+  {
+    "id": "doc_ww2_27",
+    "text": ". Mont- gomery had mounted a powerful attack on the Germans at El Alamein, sending Rommel and his German-Italian Panzer Army reeling back into Libya. If strong Allied forces could reach the coast of Tunisia, Rommel would be trapped between them and Montgomery’ s troops. Awake to the threat, the Germans poured troops into Tunisia by air and sea, brushing aside weak French forces there. Axis air power, based in Sicily, Sardinia, and Italy, pounded the advancing Allied columns. As torrential December rains turned the countryside into a quagmire, the Allies lost the race. Instead of catching Rommel, they faced a protracted struggle. While his forces dug in along the south- ern border of Tunisia opposite Montgomery, a second powerful Axis force, the F ifth Panzer Army, barred the way to the Tunisian coast. A chain of mountains separates coastal Tunisia from the arid in- terior. In a plain between two arms of the mountains and behind the passes in the west lay important Allied airﬁelds and s"
+  },
+  {
+    "id": "doc_ww2_28",
+    "text": "isian coast. A chain of mountains separates coastal Tunisia from the arid in- terior. In a plain between two arms of the mountains and behind the passes in the west lay important Allied airﬁelds and supply dumps. On 14 February 1943, the Axis commanders sent German and Italian forces through the passes, hoping to penetrate the American positions and either envelop the British in the north or seize Allied supply de- “Hill 609” by Fletcher Martin. Much of the Army’s ﬁghting in the ﬁnal of- fensive in northern Tunisia involved dismounted infantry attacks on pre- pared defensive positions in rugged hill country. (Army Art Collection) pots. German forces quickly cut off and overwhelmed two battalions of American infantry positioned too far apart for mutual support, and the experienced panzers beat back counterattacks by American reserves, including elements of the U.S. 1st Armored Division. U.S. troops began evacuating airﬁelds and supply depots on the plain and falling back to the western "
+  },
+  {
+    "id": "doc_ww2_29",
+    "text": "eat back counterattacks by American reserves, including elements of the U.S. 1st Armored Division. U.S. troops began evacuating airﬁelds and supply depots on the plain and falling back to the western arm of the mountains. Dug in around the oasis town of Sbeitla, American infantry and armor managed to hold off the Germans through 16 February, but defenses there began to disintegrate during the night, and the town lay empty by midday on the 17th. From the oasis, roads led back to two passes, the Sbiba and the Kasserine. By 21 February the Germans had pushed through both and were poised to seize road junctions leading to the British rear. Rommel and other German commanders, however, could not agree on how to exploit their success. Meanwhile Allied reinforce- ments rushed to the critical area. The 1st Armored Division turned back German probes toward Tebessa, and British armor met a more powerful thrust toward Thala, where four battalions of ﬁeld artillery from the U.S. 9th Infantry Divisi"
+  }
+]

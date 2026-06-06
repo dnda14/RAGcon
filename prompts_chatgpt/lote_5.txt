@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_40",
+    "text": "th shelter and training facilities. Detailed planning for the cross-Channel assault had begun in 1943 when the American and British Combined Chiefs of Staff appointed a British ofﬁcer, Lt. Gen. Frederick E. Morgan, as Chief of Staff to the as yet unnamed Supreme Allied Commander. When General Eisen- hower arrived in January 1944 to set up Supreme Headquarters, Al- lied Expeditionary Force (SHAEF), Morgan’ s work served as the basis for the ﬁnal plan of assault. The Allies would land in Normandy and seize the port of Cherbourg. They would establish an expanded lodgment area extending as far east as the Seine River. Having built up reserves there, they would then advance into Germany on a broad front. Ground commander for the invasion would be General Mont- gomery. The British Second Army would land on the left, while the American First Army, under Lt. Gen. Omar N. Bradley, landed on the right. Intensive exercises and rehearsals occupied the last months before the invasion. An elaborate "
+  },
+  {
+    "id": "doc_ww2_41",
+    "text": "uld land on the left, while the American First Army, under Lt. Gen. Omar N. Bradley, landed on the right. Intensive exercises and rehearsals occupied the last months before the invasion. An elaborate deception plan convinced the Ger- mans that the Normandy landings were a feint, and that larger, more important landings would take place farther east, around the Pas de Calais. Here the Germans held most of their reserves, keeping their armored formations near Paris. Developments on the Eastern Front also aided the success of the invasion. In early 1943 the Russians destroyed a German army at Stalingrad. The Germans tried to regain the initiative in the summer of 1943, attacking a Soviet-held salient near the Russian city of Kursk. In the largest tank battle known to history, they suffered a re- sounding defeat. Henceforth, they remained on the defensive, in constant retreat, while the Soviets advanced westward, retaking major portions of the Ukraine and White Russia during the fall and w"
+  },
+  {
+    "id": "doc_ww2_42",
+    "text": "re- sounding defeat. Henceforth, they remained on the defensive, in constant retreat, while the Soviets advanced westward, retaking major portions of the Ukraine and White Russia during the fall and winter and launching an offensive around Leningrad in January 1944. By March 1944 Soviet forces had reentered Polish territory, and a Soviet summer offensive had prevented the Germans from transferring troops to France. 19 On 5 June 1944, General Eisenhower took advantage of a break in stormy weather to order the invasion of “fortress Europe.” In the hours before dawn, 6 June 1944, one British and two U.S. airborne divisions dropped behind the beaches. After sunrise, British, Cana- dian, and U.S. troops began to move ashore. The British and Cana- dians met modest opposition. Units of the U.S. VII Corps quickly broke through defenses at a beach code-named U TAH and began moving inland, making contact with the airborne troops within twenty-four hours. But heavy German fire swept O MAHA, the o"
+  },
+  {
+    "id": "doc_ww2_43",
+    "text": "II Corps quickly broke through defenses at a beach code-named U TAH and began moving inland, making contact with the airborne troops within twenty-four hours. But heavy German fire swept O MAHA, the other American landing area. Elements of the 1st and 29th Infantry Divi- sions and the 2d and 5th Ranger Battalions clung precariously to a narrow stretch of stony beach until late in the day, when they were finally able to advance, outflanking the German positions. American and British beachheads linked up within days. While the Allies raced to build up supplies and reserves, American and British fighter aircraft and guerrillas of the French resistance blocked movement of German reinforcements. On the ground, Al- lied troops besieged Cherbourg and struggled to expand southward “Sherman Tanks Passing Stream of German Prisoners” by Ogden Pleissner. After seven weeks of slow, costly advances against deter- mined German defenders in the hedgerows, Army armored forma- tions seized the initiativ"
+  },
+  {
+    "id": "doc_ww2_44",
+    "text": "assing Stream of German Prisoners” by Ogden Pleissner. After seven weeks of slow, costly advances against deter- mined German defenders in the hedgerows, Army armored forma- tions seized the initiative at St. Lô and made rapid advances against a demoralized enemy. (Army Art Collection) 20 through the entangling Norman hedgerows. Earthen embankments hundreds of years old, matted with the roots of trees and shrubs, the hedgerows divided the countryside into thousands of tiny fields. The narrow roads, sunk beneath the level of the surrounding coun- tryside, became deathtraps for tanks and vehicles. Crossroads vil- lages were clusters of solidly built medieval stone buildings, ideal for defense. Small numbers of German infantry, dug into the embank- ments with machine guns and mortars and a tank or two or a few an- titank guns for support, made advancing across each ﬁeld costly. With time short and no room to maneuver, the struggle to break out became a battle of attrition. Allied troops a"
+  },
+  {
+    "id": "doc_ww2_45",
+    "text": "nk or two or a few an- titank guns for support, made advancing across each ﬁeld costly. With time short and no room to maneuver, the struggle to break out became a battle of attrition. Allied troops advanced with ago- nizing slowness from hedgerow to hedgerow, in a seemingly endless series of small battles. Advances were measured in hundreds of yards. Requirements for fire support far exceeded preinvasion plan- ning, resulting in a severe shortage of artillery shells. The British made several powerful attempts to break through to the open coun- try beyond the town of Caen, but were stopped by the Germans, who concentrated most of their armor in this threatened area. By 18 July the U.S. First Army had clawed its way into St. Lô and, on 25 July, launched Operation C OBRA . As heavy and medium bombers from England pummeled German frontline positions, infantry and armor finally punched through the defenses. Pouring through the gap, American troops advanced forty miles within a week. Reject"
+  },
+  {
+    "id": "doc_ww2_46",
+    "text": "m bombers from England pummeled German frontline positions, infantry and armor finally punched through the defenses. Pouring through the gap, American troops advanced forty miles within a week. Rejecting his generals’ advice, Hitler ordered a counterattack against the widening breakout by Germany’ s last available mobile forces in France. U.S. First Army forces stopped the Germans and joined Canadian, British, and Polish troops in catching the enemy in a giant pocket around the town of Falaise. Allied fighter-bombers and artillery now aided a massive destruction of twenty enemy divi- sions. Suddenly, it seemed the Allies might end the war before win- ter. Calling off a planned halt and logistical buildup, Eisenhower or- dered the Allied forces to drive all-out for the German frontier. With enemy forces in full retreat, French and American troops rolled into Paris on 25 August 1944. Meanwhile, veteran U.S. and French divisions, pulled out of Italy, landed on the beaches of the French Ri"
+  },
+  {
+    "id": "doc_ww2_47",
+    "text": " enemy forces in full retreat, French and American troops rolled into Paris on 25 August 1944. Meanwhile, veteran U.S. and French divisions, pulled out of Italy, landed on the beaches of the French Riviera. While French forces liberated the ports, the U.S. Seventh Army drove northward in an effort to cut off withdrawing German troops. Moving rapidly through the cities of Lyon and Besançon, they joined up with Allied forces advancing from Normandy on 11 September. Victory seemed to be at hand. But by mid-September Allied communications were strained. Combat troops had outrun their supplies. British and Canadian forces advanced into the Nether- 21 lands, and American troops crossed Belgium and Luxembourg and entered German territory. Then both met strong resistance. Bad weather curtailed unloading of supplies directly across the Nor- mandy invasion beaches, while the ports on the North Sea and the Mediterranean were in ruins. As logistical problems piled up, Eisen- hower rejected as too "
+  },
+  {
+    "id": "doc_ww2_48",
+    "text": "oading of supplies directly across the Nor- mandy invasion beaches, while the ports on the North Sea and the Mediterranean were in ruins. As logistical problems piled up, Eisen- hower rejected as too dangerous British pleas to channel all avail- able resources into one deep thrust into Germany. He did, how- ever, sanction one last bold gamble: Operation M ARKET-GARDEN . Two U.S. and one British airborne division were to open the way for a British armored thrust to seize a bridge across the lower Rhine at Arnhem in the Netherlands. The airborne troops took most of their objectives, but German resistance was much stronger than expected, and the operation failed to gain a bridgehead across the Rhine. Battles of Attrition There was to be no early end to the war. Despite its recent de- feats, the German Army remained a dangerous foe, fighting for its life in prepared defenses. Furthermore, as the Allies approached the frontiers of the Reich, they encountered a series of formidable ter- rain"
+  },
+  {
+    "id": "doc_ww2_49",
+    "text": "he German Army remained a dangerous foe, fighting for its life in prepared defenses. Furthermore, as the Allies approached the frontiers of the Reich, they encountered a series of formidable ter- rain obstacles—major rivers, mountains, and forests—and the worst weather in over thirty years. Y et Eisenhower, believing that un- remitting pressure against the enemy would shorten the war, called for the offensive to continue. Battles of attrition followed through- out October and November, all along the front. Canadian and British soldiers trudged through the frozen mud and water of the flooded tidal lowlands in the Netherlands to free the great Belgian port of Antwerp. The U.S. First Army took the German city of Aachen on 21 October. The drive of General Patton’ s Third Army toward the German border halted on 25 September due to shortages of gasoline and other critical supplies. Resuming the offen- sive in November, Patton’ s men fought for two bloody weeks around the fortress town of Met"
+  }
+]

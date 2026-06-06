@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_30",
+    "text": " The 1st Armored Division turned back German probes toward Tebessa, and British armor met a more powerful thrust toward Thala, where four battalions of ﬁeld artillery from the U.S. 9th Infantry Division arrived just in time to bolster sagging defenses. On the night of 22 February the Germans began to pull back. A few days later Allied forces returned to the passes. The first American battle with German forces had cost more than 6,000 U.S. casualties, including 300 dead and two-thirds of the tank strength of the 1st Armored Division. In March, after the British repulsed another German attack, the Allies resumed the offensive. The U.S. II Corps, now under the com- mand of Maj. Gen. George S. Patton, attacked in coordination with an assault on the German line by Montgomery’ s troops. American and British forces in the south met on 7 April as they squeezed Axis forces into the northeastern tip of the country. The ﬁnal drive to clear Tunisia began on 19 April. On 7 May British armor entered"
+  },
+  {
+    "id": "doc_ww2_31",
+    "text": " and British forces in the south met on 7 April as they squeezed Axis forces into the northeastern tip of the country. The ﬁnal drive to clear Tunisia began on 19 April. On 7 May British armor entered Tunis, and Amer- ican infantry entered Bizerte. Six days later the last Axis resistance in Africa ended with the surrender of over 275,000 prisoners of war. The U.S. Army learned bitter lessons about the inadequacy of its training, equipment, and leadership in the North African campaign. Army Ground Forces acted quickly to ensure that American soldiers would receive more realistic combat training. Higher commanders re- alized that they could not interfere with their subordinates by dictat- ing in detail the positions of their units. Troops had to be committed in division-size, combined arms teams, not in driblets. The problem posed by American tanks, outgunned by the more heavily armed and armored German panzers, took far longer to correct. But the artillery established itself as the Army"
+  },
+  {
+    "id": "doc_ww2_32",
+    "text": "eams, not in driblets. The problem posed by American tanks, outgunned by the more heavily armed and armored German panzers, took far longer to correct. But the artillery established itself as the Army’ s most proﬁcient arm. 14 Sicily and Italy Meeting in Casablanca in January 1943, President Roosevelt, Prime Minister Churchill, and the Combined Chiefs of Staff de- cided that the large Italian island of Sicily would be their next target. Montgomery’ s British forces landed on the southeast coast, while Patton’ s newly activated Seventh Army landed on the southwest, with the mission of seizing airfields and protecting the flank of the British drive. Airborne troops spearheading the attacks scattered wide of their targets but managed to disrupt enemy communica- tions. Hours after the initial landings on 9 July, German armor struck the American beaches. Naval gunfire, infantry counterat- tacks, and the direct fire of field artillery landing at the critical junc- ture broke up the German fo"
+  },
+  {
+    "id": "doc_ww2_33",
+    "text": "landings on 9 July, German armor struck the American beaches. Naval gunfire, infantry counterat- tacks, and the direct fire of field artillery landing at the critical junc- ture broke up the German formations. But two attempts to rein- force the beaches with parachute and glider-borne troops ended in disaster when Allied antiaircraft batteries mistook the transport planes for enemy aircraft and opened fire, causing severe losses. Meanwhile, the Germans solidly blocked the British drive on the Sicilian capital, Messina. General Sir Harold R. L. G. Alexander, Allied ground commander, ordered Patton to push toward Palermo, at the western tip of the island. Once in Palermo, since the British drive was still stalled, his forces attacked Messina from the north. Patton used a series of small amphibious end runs to outflank Ger- man positions on the northern coastal road. American and British troops arrived in Messina on 17 August, just as the last Axis troops evacuated Sicily. In late July th"
+  },
+  {
+    "id": "doc_ww2_34",
+    "text": "ibious end runs to outflank Ger- man positions on the northern coastal road. American and British troops arrived in Messina on 17 August, just as the last Axis troops evacuated Sicily. In late July the Allies decided to follow up their success in Sicily with an invasion of Italy. Having lost hope of victory, the Italian High Command, backed by the king, opened secret negotiations with the Allies. The Germans, suspecting that Italy was about to desert the Axis, rushed in additional troops. The Germans swiftly disarmed the Italian Army and took over its defensive positions. A British ﬂeet sailed into the harbor of Taranto and disembarked troops onto the docks, while the U.S. Fifth Army under Lt. Gen. Mark W . Clark landed on the beaches near Salerno on 9 September. The Germans reacted in strength. For four days vigorous attacks by German armor threatened the beaches. But on 16 September American and British forces made contact, and two weeks later American troops entered Naples, the larg"
+  },
+  {
+    "id": "doc_ww2_35",
+    "text": "ength. For four days vigorous attacks by German armor threatened the beaches. But on 16 September American and British forces made contact, and two weeks later American troops entered Naples, the largest city south of Rome. Allied plans called for a continued advance to tie down Ger- man troops and prevent their transfer to France or Russia, while Hitler decided to hold as much of Italy as possible. 15 As the Allies advanced up the mountainous spine of Italy, they confronted a series of heavily fortified German defensive positions, anchored on rivers or commanding terrain features. The brilliant de- 16 “Bailey Bridge” by Tom Craig. Mechanized warfare demanded a sub- stantial increase in tactical bridging; in Italy the Bailey Bridge proved versatile and adaptable to a variety of weights and situations. (Army Art Collection) 17 laying tactics of the German commander in Italy, Field Marshal Al- bert Kesselring, exacted a high price for every Allied gain. The cam- paign in Italy became an "
+  },
+  {
+    "id": "doc_ww2_36",
+    "text": " situations. (Army Art Collection) 17 laying tactics of the German commander in Italy, Field Marshal Al- bert Kesselring, exacted a high price for every Allied gain. The cam- paign in Italy became an endless siege, fought in rugged terrain, in often appalling conditions, and with limited resources. Moving north from Naples, the Allies forced a crossing of the Volturno River in October 1943 and advanced to the Winter Line, a main German defensive position anchored on mountains around Cassino. Repeated attempts over the next six months to break or outﬂank it failed. An amphibious end run, landing the U.S. VI Corps under Maj. Gen. John P . Lucas at Anzio in January 1944, failed to turn the German flank, for Lucas waited too long to build up his reserves before moving aggressively against the German de- fenses. Kesselring had time to call in reinforcements, including ar- tillery, which soon brought every inch of Allied-held ground under fire. As the defenders dug in, the end run turned int"
+  },
+  {
+    "id": "doc_ww2_37",
+    "text": "German de- fenses. Kesselring had time to call in reinforcements, including ar- tillery, which soon brought every inch of Allied-held ground under fire. As the defenders dug in, the end run turned into another siege, as American and British troops repulsed repeated counterattacks. Meanwhile, an American attempt to cross the Rapido River, timed to coincide with the Anzio landing, miscarried with heavy ca- sualties. Allied efforts to blast a way through the enemy’ s mountain defenses proved futile, despite the use of medium and heavy bombers to support ground attacks around Cassino. Finally, in May 1944, a se- ries of coordinated attacks by the Fifth Army and Eighth Army pried the Germans loose, and they began to fall back. On 4 June 1944, two days before the Normandy invasion, Allied troops entered Rome. The Normandy invasion made Italy a secondary theater, and Al- lied strength there gradually decreased. Nevertheless, the fighting continued. The Allies attacked a new German defensive l"
+  },
+  {
+    "id": "doc_ww2_38",
+    "text": " entered Rome. The Normandy invasion made Italy a secondary theater, and Al- lied strength there gradually decreased. Nevertheless, the fighting continued. The Allies attacked a new German defensive line in the Northern Appenines in August but were unable to make apprecia- ble headway through the mountains. Not until spring of 1945 did they penetrate the final German defenses and enter the Po valley. German forces in Italy surrendered on 2 May 1945. The Cross-Channel Attack Preparations for an attack on German-occupied France contin- ued as did the campaigns in the Mediterranean. The defeat of the German U-boat threat, critical to the successful transport of men and materiel across the Atlantic, had been largely accomplished by the second half of 1943. The success of the war against the U-boats was immeasurably aided by secret intelligence, code-named U LTRA, garnered by Anglo-American breaking of German radio communi- 18 cations codes. Such information also proved valuable to the com-"
+  },
+  {
+    "id": "doc_ww2_39",
+    "text": "boats was immeasurably aided by secret intelligence, code-named U LTRA, garnered by Anglo-American breaking of German radio communi- 18 cations codes. Such information also proved valuable to the com- manders of the ground campaign in Italy and France. By early 1944 an Allied strategic bombing campaign so reduced German strength in fighters and trained pilots that the Allies effec- tively established complete air superiority over western Europe. Al- lied bombers now turned to systematic disruption of the trans- portation system in France in order to impede the enemy’ s ability to respond to the invasion. At the same time, American and British leaders orchestrated a tremendous buildup in the British Isles, trans- porting 1.6 million men and their equipment to England and pro- viding them with shelter and training facilities. Detailed planning for the cross-Channel assault had begun in 1943 when the American and British Combined Chiefs of Staff appointed a British ofﬁcer, Lt. Gen. Freder"
+  }
+]

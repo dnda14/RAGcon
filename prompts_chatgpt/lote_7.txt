@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_60",
+    "text": "Ninth and First Army troops met on 1 April, encircling the industrial re- gion of the Ruhr and capturing 325,000 prisoners. The First Army continued eastward toward Kassel and Leipzig while the Third Army rolled through Frankfurt, Eisenach, and Erfurt toward Dres- den, then southward toward Czechoslovakia and Austria. The Sixth Army Group advanced into Bavaria toward Munich and Salzburg, denying the Germans a last-ditch defense in the Bavarian or Aus- trian Alps. Germany was shattered. Nevertheless, Eisenhower resisted British pressure to drive on to Berlin. He saw no point in taking casualties to capture ground that, in line with earlier agreements between Allied leaders, would have 25 to be relinquished to the Soviets once hostilities ceased. His objec- tive remained to capture or destroy the remnants of the German armed forces. The Soviets massed 1.2 million men and 22,000 pieces of artillery and on 16 April began their assault upon the city. As that battle raged, British, American,"
+  },
+  {
+    "id": "doc_ww2_61",
+    "text": "y the remnants of the German armed forces. The Soviets massed 1.2 million men and 22,000 pieces of artillery and on 16 April began their assault upon the city. As that battle raged, British, American, and Soviet forces neared previously negotiated stop lines along the Elbe and Mulde Rivers. The First Army made contact with Soviet troops on 25 April around Torgau. Meanwhile, as the Third Army entered Czechoslovakia and British troops reached the Baltic, the Russians moved through the streets of Berlin. On 30 April 1945, Hitler committed suicide in a bunker be- neath the ruins of his capitol. German forces in Italy surrendered effective 2 May and those in the Netherlands, northwestern Germany, and Denmark on 4 May. Pa- trols of the U.S. Seventh Army driving eastward through Austria and the Fifth Army driving north from Italy met near the Brenner Pass. On 7 May the German High Command surrendered all its forces un- conditionally, and 8 May was ofﬁcially proclaimed V–E Day. Though peace ha"
+  },
+  {
+    "id": "doc_ww2_62",
+    "text": "ifth Army driving north from Italy met near the Brenner Pass. On 7 May the German High Command surrendered all its forces un- conditionally, and 8 May was ofﬁcially proclaimed V–E Day. Though peace had come to Europe, one of the most culturally and economi- cally advanced areas of the globe lay in ruins. Germany, the industrial engine of the Continent, lay prostrate, occupied by British, French, American, and Soviet troops. Britain, exhausted by its contribution to the victory, tottered near economic collapse, while France was totally dependent on the United States. The Soviet Union had suffered in ex- cess of 20 million casualties and untold devastation, but its armed forces remained powerful and its intentions obscure. To the victory in western Europe and Italy, the United States had contributed 68 divi- sions, 15,000 combat aircraft, well over 1 million tanks and motor ve- hicles, and 135,000 dead. The country now turned its focus to a war a half a world away and to the defeat of Ja"
+  },
+  {
+    "id": "doc_ww2_63",
+    "text": "tributed 68 divi- sions, 15,000 combat aircraft, well over 1 million tanks and motor ve- hicles, and 135,000 dead. The country now turned its focus to a war a half a world away and to the defeat of Japan in the Paciﬁc. “Follow Me” by H. Charles McBarron. Amphibious assaults by Army and Marine infantry characterized the war in the Paciﬁc. (Army Art Collection) The Paciﬁc War The Paciﬁc War Even before Pearl Harbor, President Franklin D. Roosevelt and the American military chiefs had agreed on a common strategy with Great Britain: Germany, the most powerful and dangerous of the Axis powers, must be defeated first. Only enough military resources would be devoted to the Pacific to hold the Japanese west of an Alaska-Hawaii-Panama defensive line. Competition for limited resources between the Allied command- ers of the European and Pacific theaters was actually less intense than might have been expected. The Pacific was a naval war, and lit- tle U.S. offensive naval power was required in the"
+  },
+  {
+    "id": "doc_ww2_64",
+    "text": "lied command- ers of the European and Pacific theaters was actually less intense than might have been expected. The Pacific was a naval war, and lit- tle U.S. offensive naval power was required in the Atlantic besides landing craft. Aside from the U-boats, the Germans posed no threat in Atlantic waters. U-boat defense primarily required many small, fast escort vessels. Then too, almost the entire British Navy was deployed in the Atlantic. Thus, American offensive naval power—especially the fast carrier task forces—could be committed to the Paciﬁc war. More than distance separated the two wars; they differed funda- mentally in strategy and command and in the character of the ﬁghting. In Europe the war was planned and conducted in combination with powerful Allies. Strategic decisions had to be argued and agreed to by the American and British chiefs of staff, and, on occasion, even by President Roosevelt and Prime Minister Winston Churchill. Opera- tional planning was conducted, at least "
+  },
+  {
+    "id": "doc_ww2_65",
+    "text": "be argued and agreed to by the American and British chiefs of staff, and, on occasion, even by President Roosevelt and Prime Minister Winston Churchill. Opera- tional planning was conducted, at least at the higher levels, by com- bined Anglo-American staffs. In the Pacific the United States also had Allies—Australia and New Zealand. Y et the ratio of U.S. to Al- lied forces was much higher there than in Europe, and in consequence strategy and planning were almost wholly in American hands. Eisenhower, the Supreme Commander in Europe, had no coun- terpart in the Pacific. From the beginning of the war, rivalry be- tween the Army and the Navy marked the conﬂict. The two services competed for command, territory, and resources. In the vast Pa- cific, an ocean dotted with thousands of coral islands, there should have been ample room for both. But interservice rivalries and great distances prevented a single unified commander from being named, until General Douglas MacArthur became Supreme Com"
+  },
+  {
+    "id": "doc_ww2_66",
+    "text": "ds, there should have been ample room for both. But interservice rivalries and great distances prevented a single unified commander from being named, until General Douglas MacArthur became Supreme Commander, Allied Powers (SCAP), in the last days of the war. Instead, the Pa- ciﬁc was divided into area commands. The two most important were MacArthur’ s Southwest Pacific Area (SWP A) and Admiral Chester Nimitz’ s Pacific Ocean Areas (POA). POA, in turn, was subdivided into North Pacific, Central Pacific, and South Pacific commands. Nimitz personally retained command of the Central Paciﬁc. Fighting in the Pacific was unlike fighting in Europe. The cam- paigns in Europe were characterized by huge ground forces driving overland into the heart of the enemy’ s country. Both in MacArthur’ s SWP A and Nimitz’ s POA, the Pacific war was a seemingly endless series of amphibious landings and island-hopping campaigns where naval power, air power, and shipping, rather than large and heavy ground for"
+  },
+  {
+    "id": "doc_ww2_67",
+    "text": "and Nimitz’ s POA, the Pacific war was a seemingly endless series of amphibious landings and island-hopping campaigns where naval power, air power, and shipping, rather than large and heavy ground forces, were of paramount importance. Yet for the soldiers and marines who assaulted the countless beaches, the Paciﬁc war was even more brutal and deadly than the war in Europe. Japanese defenders always dug in, reinforced their bunkers with coconut logs, and fought until they were killed. They almost never surrendered. On Betio in the Tarawa Atoll in November 1943 the marines suffered 30 “West Coast Dock” by Barse Miller. Roughly 40 percent of the cargo moved overseas by the Army during the war went to the Paciﬁc theater. (Army Art Collection) 3,301 casualties, including 900 killed in action, for a bit of coral 3 miles long and 800 yards wide. At Iwo Jima in February and March 1945 the marines lost almost 6,000 dead and over 17,000 wounded and fought for ﬁve weeks to take an island less tha"
+  },
+  {
+    "id": "doc_ww2_68",
+    "text": "or a bit of coral 3 miles long and 800 yards wide. At Iwo Jima in February and March 1945 the marines lost almost 6,000 dead and over 17,000 wounded and fought for ﬁve weeks to take an island less than ﬁve miles long. At Iwo no battalion suffered fewer than 50 percent casualties, and many sustained even higher losses. In the southwest Paciﬁc, MacArthur’ s casualties were pro- portionately fewer. Fighting on the larger land masses of New Guinea and the Philippines, he had more room to maneuver, and he could almost always “hit ‘em where they ain’t.” The history of the war in the Paciﬁc falls neatly into three periods. The ﬁrst six months of the war, from December 1941 to May 1942, were a time of unbroken Japanese military victory. At the-height of Japanese expansion in mid-1942, the tide turned. The period from mid-1942 to mid-1943 saw Japanese strategic thrusts into the south and central Paciﬁc blunted by the carrier battles of the Coral Sea (May 1942) and Midway (June 1942). Limited U."
+  },
+  {
+    "id": "doc_ww2_69",
+    "text": "ned. The period from mid-1942 to mid-1943 saw Japanese strategic thrusts into the south and central Paciﬁc blunted by the carrier battles of the Coral Sea (May 1942) and Midway (June 1942). Limited U.S. offensives in the Solomons and in the Papuan area of eastern New Guinea were launched in the last months of 1942. Both offensives were begun on a shoestring, and both came close to failure. Y et they represented the end of defeat in the Paciﬁc and the ﬁrst tentative steps toward victory. Those steps became great leaps in 1944 and 1945. T wo amphibious of- fensives developed, as MacArthur advanced across the northern coast of New Guinea into the Philippines and Nimitz island-hopped 2,000 miles across the central Paciﬁc from the Gilbert Islands to Okinawa. Japan on the Offensive Japan, largely devoid of natural resources to-feed its industries, looked overseas for supplies of strategic materials such as ores and petroleum. Before 1939 the United States was Japan’ s major sup- plier. But P"
+  }
+]

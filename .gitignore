@@ -77,3 +77,16 @@ htmlcov/
 
 
 resumen_tiempos.md
+
+# Datos Generados (Corpus, QA, Tripletas)
+qa_real.json
+corpus_real.json
+corpus_coref.json
+triplets_output*.json
+
+rag_src/feature_engineering.py
+rag_src/extract_clean_triplet.py
+rag_src/cypher_queries.py
+
+recomendaciones.txt
+

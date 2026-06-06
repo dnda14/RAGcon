@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_100",
+    "text": "ere in uniform at the end of the war; over 8 mil- lion of them were soldiers. But the impulse was strong to follow the patterns of the past and dismantle this force. Families pressed the government to “bring the boys home,” and soldiers overseas de- manded the acceleration of the separation process. American monopoly of the atomic bomb seemed to furnish all the power that American security interests needed. Some air power advocates even argued that the bomb made armies and navies obsolete. President Roosevelt had died in April 1945, on the eve of victory. The new President, Harry S. Truman, and his advisers tried to resist the political pressures for hasty demobilization. Truman wanted to retain a postwar Army of 1.5 million, a Navy of 600,000, and an Air Force of 400,000. But neither Congress nor the American public was willing to sustain such a force. Within ﬁve months of V–J Day, 8.5 million servicemen and women had been mustered out, and in June of the following year only two full "
+  },
+  {
+    "id": "doc_ww2_101",
+    "text": "ress nor the American public was willing to sustain such a force. Within ﬁve months of V–J Day, 8.5 million servicemen and women had been mustered out, and in June of the following year only two full Army divisions were avail- able for deployment in an emergency. By 1947 the Army numbered a mere 700,000—sixth in size among the armies of the world. Yet too much had changed for the Army to return to its small and insular prewar status. Millions of veterans now remembered their service with pride. The beginning of the Cold War, especially the Berlin blockade of 1948, dramatically emphasized the need to remain strong. The Army had become too deeply intertwined with American life and security to be reduced again to a constabulary force. Moreover, the time was not far off when new conflicts would demonstrate the limits of atomic power and prove that ground forces were as necessary as they had been in the past. 44 Further Readings Despite its age, Charles B. MacDonald’ s The Mighty Endeavor: "
+  },
+  {
+    "id": "doc_ww2_102",
+    "text": "d demonstrate the limits of atomic power and prove that ground forces were as necessary as they had been in the past. 44 Further Readings Despite its age, Charles B. MacDonald’ s The Mighty Endeavor: American Armed Forces in the European Theater in W orld W ar II (1969) remains a sound, informative, and highly readable survey of the American role in the war in Europe. For the interwar Army, I. B. Holley, jr.’ s General John M. Palmer, Citizen Soldiers and the Army of a Democracy (1982) is good for the early years. Palmer was the architect of the National Defense Act of 1920. D. Clayton James’ The Years of MacArthur: V olume 1, 1880–1941 (1970), looks at the interwar Army in terms of the man who dominated it in the 1930s, while Forrest Pogue’ s George C. Marshall, V olume 1: Educa- tion of a General, 1880–1939 (1963), focuses on the man who over- saw its transformation into a powerful, modern mass army. V olume 2: Ordeal and Hope, 1939–1945 (1986), and V olume 3: Organizer of Victory, 1"
+  },
+  {
+    "id": "doc_ww2_103",
+    "text": "a General, 1880–1939 (1963), focuses on the man who over- saw its transformation into a powerful, modern mass army. V olume 2: Ordeal and Hope, 1939–1945 (1986), and V olume 3: Organizer of Victory, 1943–1945 (1973), are the best sources on the War Depart- ment and the General Staff and cover an enormous range of topics from strategy and logistics to personalities. Len Deighton’ s Blitzkrieg: From the Rise of Hitler to the Fall of Dunkirk (1980) is a popular, semijournalistic account that places German tactical and operational innovations in the context of in- terwar German Army politics and the Nazi rise to power and also discusses the relationship between tactics, equipment, and organi- zation in a nontechnical way. Fire-Power: British Army W eapons and Theories of W ar, 1904–1945 (1982), by Shelford Bidwell and Dominick Graham, is a seminal and important book, tracing changes in military doctrine from the perspective of the artillery arm from World War I through World War II. Bidwel"
+  },
+  {
+    "id": "doc_ww2_104",
+    "text": ", by Shelford Bidwell and Dominick Graham, is a seminal and important book, tracing changes in military doctrine from the perspective of the artillery arm from World War I through World War II. Bidwell and Graham analyze the origins of Blitzkrieg tactics and panzer organizations and the evolution of indirect artillery ﬁre and their impact on war. W. G. F . Jackson’ s Battle for North Africa, 1940–1943(1975), is re- liable, and Martin Blumenson’ s Kasserine Pass (1967) can be supple- mented by Ralph Ingersoll’ s The Battle Is the Pay-off (1943). Written in the immediate aftermath of the Kasserine Pass debacle by a jour- nalist-captain who accompanied the Rangers on their raid against the Italian-held pass at El Guettar, it has the gritty immediacy of a con- 45 temporary ﬁrst-person account and ends with an impassioned plea for tougher physical conditioning and more realistic training. A useful antidote to grand theoretical speculations about the nature of war is John Ellis’ The Sharp En"
+  },
+  {
+    "id": "doc_ww2_105",
+    "text": "and ends with an impassioned plea for tougher physical conditioning and more realistic training. A useful antidote to grand theoretical speculations about the nature of war is John Ellis’ The Sharp End: The Fighting Man in Wo rl d War II(1980). Using a vast array of first-person accounts, Ellis focuses on the experience of frontline combat in both theaters. Ellis has also written Cassino: Hollow Victory (1984), a gripping and critical account of Allied attempts to break through the moun- tains of central Italy, an effort which, the author believes, was crip- pled by a self-serving and inept Allied high command. Useful com- panions are Wyford Vaughan-Thomas’ Anzio (1961) and Martin Blumenson’ s Anzio: The Gamble That Failed(1963). Max Hastings’ Overlord: D-Day and the Battle for Normandy (1984) is among the best of the new books on the invasion. A care- ful and skilled journalist, Hastings asks why it took so long for the Allies to break out of the beachhead. He finds the flawed perfor-"
+  },
+  {
+    "id": "doc_ww2_106",
+    "text": "984) is among the best of the new books on the invasion. A care- ful and skilled journalist, Hastings asks why it took so long for the Allies to break out of the beachhead. He finds the flawed perfor- mance of the citizen armies of Britain and the United States at fault, when compared to the skill and proﬁciency of the Germans. Russell F. Weigley, in Eisenhower’ s Lieutenants: The Campaign of France and Germany, 1944–1945 (1986), asks similar questions about American combat performance and advances a provocative thesis, suggesting that the U.S. Army never reconciled its two conflicting heritages—that of the frontier constabulary, with its emphasis on mobility, and that of U. S. Grant’ s direct power drive in the Civil War. Thus, U.S. combat formations in World War II were struc- tured for mobility, while American strategy and operations called for head-on confrontations with the center of enemy strength. Ralph F . Bennett’ s ULTRA in the W est: The Normandy Cam- paign, 1944–1945 (1980)"
+  },
+  {
+    "id": "doc_ww2_107",
+    "text": "mobility, while American strategy and operations called for head-on confrontations with the center of enemy strength. Ralph F . Bennett’ s ULTRA in the W est: The Normandy Cam- paign, 1944–1945 (1980), heavily based on the original, declassiﬁed decrypts, is sound on U LTRA’S impact on the land campaign. Charles B. MacDonald’ s A Time for Trumpets: The Untold Story of the Bat- tle of the Bulge (1985) updates earlier accounts of the German Ar- dennes offensive with the latest available information about the Al- lied intelligence failure, while his Company Commander (1978) is still one of the most moving and honest first-person accounts of small-unit command responsibility available. (MacDonald was one of the youngest captains in the Army in 1944 when his company was hit and overrun in the ﬁrst hours of the German offensive.) Stephen Ambrose’ s Supreme Commander: The W ar Years of Gen- eral Dwight D. Eisenhower (1970) is a judicious and balanced assess- ment of Eisenhower from his arrival"
+  },
+  {
+    "id": "doc_ww2_108",
+    "text": "st hours of the German offensive.) Stephen Ambrose’ s Supreme Commander: The W ar Years of Gen- eral Dwight D. Eisenhower (1970) is a judicious and balanced assess- ment of Eisenhower from his arrival in Washington in December 1941 through the German surrender in May 1945. Omar N. Bradley’ s 46 and Clay Blair’ s A General’ s Life(1983) is a far more partisan biog- raphy of the so-called G.I. General, which provides a sometimes dis- concerting glimpse of the internal tensions and disagreements within the Allied high command in Europe. It should be balanced with Nigel Hamilton’ s exhaustive, but also pugnaciously partisan three-volume biography, Monty: The Making of a General, 1887–1942 (1981), Monty: Master of the Battleﬁeld, 1942–1944 (1983), and Monty: Final Years of the Field-Marshal, 1944–1976 (1987), and all can be supple- mented by the fairly reliable ofﬁcial histories produced by the Amer- ican and British military services in the postwar period. Two general histories provide exc"
+  },
+  {
+    "id": "doc_ww2_109",
+    "text": "44–1976 (1987), and all can be supple- mented by the fairly reliable ofﬁcial histories produced by the Amer- ican and British military services in the postwar period. Two general histories provide excellent surveys of the Paciﬁc war, from the causes to the conclusion. John Toland’ s The Rising Sun, 1936–1945 (1971), views the war from the Japanese perspective and focuses on the war’ s causes, Japanese war plans, and the early victo- rious campaigns from the vantage point of Japan’ s military leadership. A counterpart volume is Eagle Against the Sun (1985) by Ronald H. Spector. Like Toland, Spector covers the entire conﬂict but views the war from the American perspective. Eagle Against the Sun may be the best single-volume survey of the Paciﬁc war yet written. The historical literature on Pearl Harbor and the ﬁrst six months of the war in the Pacific is voluminous—so vast that readers must be especially careful in their selections. Perhaps the best picture of life in the prewar army is "
+  }
+]

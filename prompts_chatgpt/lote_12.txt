@@ -1,0 +1,49 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 5 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_110",
+    "text": "earl Harbor and the ﬁrst six months of the war in the Pacific is voluminous—so vast that readers must be especially careful in their selections. Perhaps the best picture of life in the prewar army is found in James Jones’ ﬁctional From Here to Eternity (1985). The subject of Pearl Harbor has produced countless pages of description and analysis, but much is of interest only to pro- fessional historians and specialists in the subject. T wo books of spe- cial value to the general reader are Walter Lord’ s Day of Infamy (1957) and Gordon Prange’ s At Dawn W e Slept (1982). Day of In- famy begins in the predawn hours and details the fascinating, dra- matic events of the day the Japanese attacked Pearl Harbor. The book is short, and Lord writes in a clear, journalistic style. At Dawn We Slept is a more complete and exhaustive book on the attack, the events leading to it, and the surrounding controversies. Although the book is over 700 pages long, the style is readable, the story in- terestin"
+  },
+  {
+    "id": "doc_ww2_111",
+    "text": " a more complete and exhaustive book on the attack, the events leading to it, and the surrounding controversies. Although the book is over 700 pages long, the style is readable, the story in- teresting, and the treatment complete. If a student can read only one book on Pearl Harbor, Prange’ s work is the logical choice. The best single-volume survey of the ﬁrst six months in the Pa- cific after Pearl Harbor is John Toland’ s But Not in Shame (1961), which relates the story of defeat in the Pacific with a true sense of heroism and tragedy. Included are the American defeats at Pearl Harbor, Bataan, Corregidor, and Wake Island, and the Allied fail- ures in the Dutch East Indies and Singapore. Stanley Falk’ s Bataan: 47 March of Death (1984) is a moving and unbiased account of one of the most emotional subjects in American military history. The battles for Guadalcanal and for Buna went on simultane- ously, but Guadalcanal received far more attention from the Ameri- can press at the time an"
+  },
+  {
+    "id": "doc_ww2_112",
+    "text": "emotional subjects in American military history. The battles for Guadalcanal and for Buna went on simultane- ously, but Guadalcanal received far more attention from the Ameri- can press at the time and from historians since that date. However, the quality of the works on Guadalcanal varies greatly. An older but reli- able account is The Battle for Guadalcanal (1979) by Samuel B. Grif- fith II, which can be supplemented by Richard Tregaskis’ Guadal- canal Diary (1984), a classic in war reporting that came out of the fighting on Guadalcanal. For the Papua Campaign, Lida Mayo’ s Bloody Buna (1979) not only chronicles the battles but also effectively conveys the nightmarish qualities of fighting in New Guinea—the constant rain, the disease, the lack of proper food and equipment, and the constant threat of death from the Japanese or from the jungle. Hundreds, if not thousands, of books have been written on the campaigns that produced victory over Japan in the Paciﬁc war. They range from ver"
+  },
+  {
+    "id": "doc_ww2_113",
+    "text": "nt threat of death from the Japanese or from the jungle. Hundreds, if not thousands, of books have been written on the campaigns that produced victory over Japan in the Paciﬁc war. They range from very detailed volumes in the ofﬁcial histories of the United States Army, Navy, and Marine Corps to highly romanti- cized books on speciﬁc actions, people, weapons, and so forth. The following three books are accurate, balanced, and interesting ac- counts of the subject. T wo sound works covering the offensive pe- riod are D. Clayton James’ The Years of MacArthur, 1941–1945 (1975), for the offensives in the Southwest Paciﬁc and the Philip- pines, and James and William Belote’ s Titans of the Seas (1974), an account of the carrier battles in the Paciﬁc. But no work better de- scribes combat in the Paciﬁc war at the squad and platoon level than Island Victory (1983) by S. L. A. Marshall. During World War II as a combat historian he gathered material for Island Victory by interviewing infantryme"
+  },
+  {
+    "id": "doc_ww2_114",
+    "text": " Paciﬁc war at the squad and platoon level than Island Victory (1983) by S. L. A. Marshall. During World War II as a combat historian he gathered material for Island Victory by interviewing infantrymen of the 7th Infantry Division who had just cleared two small islands in the Kwajalein Atoll. The book tells the stories of squad and platoon ﬁghts with holed-up Japanese on is- lands no more than 250 yards wide. There are no generals or colonels here, no high-level planning or strategy. This is the story of ground combat from the vantage point of the individual infantry- man, and, like MacDonald’ s Company Commander, the work is a testimony to the determination and heroism of the individual GI. 48 Note: The publication dates are shown for the most recent editions listed in Books in Print. Many of these books were originally published years earlier."
+  }
+]

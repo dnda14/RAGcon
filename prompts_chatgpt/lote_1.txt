@@ -1,0 +1,69 @@
+==================== SYSTEM INSTRUCTION ====================
+You are an expert AI specialized in Knowledge Graph construction and entity-relation extraction.
+Your task is to extract high-quality, clean semantic triplets (Subject-Relation-Object) from the provided text chunks.
+
+For each chunk, you will be given an "id" and a "text".
+You must extract triplets and format them EXACTLY as a JSON array of objects with the following schema:
+[
+  {
+    "fragmento_id": "the exact ID of the chunk",
+    "sujeto": "Name of the Subject Entity (clean, resolved noun/proper noun, NO pronouns like he/she/it/this/they)",
+    "relacion": "The relationship verb or action, in lowercase (e.g., 'founded_by', 'is_located_in', 'plays', 'is')",
+    "objeto": "Name of the Object Entity (clean, resolved noun/proper noun, NO pronouns)",
+    "descripcion": "The exact sentence from the text where this relationship is mentioned."
+  }
+]
+
+CRITICAL RULES:
+1. CO-REFERENCE RESOLUTION: You must resolve all pronouns (he, she, it, they, this, that, which, who, their, his, her, etc.) to their explicit real-world entity name in both "sujeto" and "objeto".
+   Example: If the text is "Radio City is a station. It broadcasts from Mumbai.", the second triplet should be:
+   sujeto: "Radio City", relacion: "broadcasts_from", objeto: "Mumbai", descripcion: "It broadcasts from Mumbai."
+2. DESCRIPTION FIELD: The "descripcion" field MUST be the exact sentence or clause from the input text from which the triplet was extracted. Do not summarize or paraphrase this sentence.
+3. OUTPUT ONLY VALID JSON: Return only a raw JSON array. Do not write any markdown code blocks like ```json ... ```, and do not add any conversational text or explanation. Start your response with [ and end it with ].
+4. QUALITY over noise: Only extract clean, meaningful facts. Avoid vague or noisy triplets. Keep entities concise.
+
+==================== INPUT DATA TO PROCESS ====================
+Please process the following batch of 10 chunks. Return ONLY a single merged JSON array containing the triplets for all these chunks.
+
+[
+  {
+    "id": "doc_ww2_0",
+    "text": "A Brief History of the U.S. Army in World War II CENTER OF MILITAR Y HISTOR Y UNITED STATES ARMY WASHINGTON, D.C., 1992 Introduction World War II was the largest and most violent armed conﬂict in the history of mankind. However, the half century that now separates us from that conﬂict has exacted its toll on our collective knowledge. While World War II continues to absorb the interest of military schol- ars and historians, as well as its veterans, a generation of Americans has grown to maturity largely unaware of the political, social, and mil- itary implications of a war that, more than any other, united us as a people with a common purpose. Highly relevant today, World War II has much to teach us, not only about the profession of arms, but also about military preparedness, global strategy, and combined operations in the coalition war against fascism. During the next several years, the U.S. Army will participate in the nation’ s 50th anniversary commemoration of World War II. The comm"
+  },
+  {
+    "id": "doc_ww2_1",
+    "text": "y, and combined operations in the coalition war against fascism. During the next several years, the U.S. Army will participate in the nation’ s 50th anniversary commemoration of World War II. The commemoration will include the publication of various materials to help educate Americans about that war. The works produced will pro- vide great opportunities to learn about and renew pride in an Army that fought so magnificently in what has been called “the mighty endeavor.” A Brief History of the U.S. Army in W orld W ar II highlights the major ground force campaigns during the six years of the war, offers suggestions for further reading, and provides Americans an opportuni- ty to learn about the Army’ s role in World War II. This brochure was prepared at the U.S. Army Center of Military History by Wayne M. Dzwonchyk (Europe) and John Ray Skates (Pacific). I hope this absorbing account of that period will enhance your appreciation of American achievements during World War II. M. P . W . Sto"
+  },
+  {
+    "id": "doc_ww2_2",
+    "text": "y by Wayne M. Dzwonchyk (Europe) and John Ray Skates (Pacific). I hope this absorbing account of that period will enhance your appreciation of American achievements during World War II. M. P . W . Stone Secretary of the Army Contents The War in Europe . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3 The Outbreak of War . . . . . . . . . . . . . . . . . . . . . . . . . . . 4 The United States Enters the War . . . . . . . . . . . . . . . . . . 8 The North African Campaign . . . . . . . . . . . . . . . . . . . . . 10 Sicily and Italy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 The Cross-Channel Attack . . . . . . . . . . . . . . . . . . . . . . . 17 Battles of Attrition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 The Battle of the Bulge . . . . . . . . . . . . . . . . . . . . . . . . . . 22 The Final Offensive . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23 The Paciﬁc War . . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
+  },
+  {
+    "id": "doc_ww2_3",
+    "text": " . . . . . . . . . . . . . . . . . . . . . . 22 The Final Offensive . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23 The Paciﬁc War . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29 Japan on the Offensive . . . . . . . . . . . . . . . . . . . . . . . . . . 31 The Tide Turns . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34 Twin Drives to American Victory . . . . . . . . . . . . . . . . . . 39 Aftermath . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43 Maps Allied Operations in World War II, 1942–1945 . . . . . . . . . . 12 The Paciﬁc and Adjacent Theaters, 1942–1945 . . . . . . . . . . 36 Further Readings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45 “OMAHA Beach” by Gary Sheahan. This was the one sector of the Normandy coast where the German defenses had begun to reach the expectations of Field Marshal Rommel, and here the Allied invasion of France faced its greatest crisis. (Army Art Collection) The W"
+  },
+  {
+    "id": "doc_ww2_4",
+    "text": " the Normandy coast where the German defenses had begun to reach the expectations of Field Marshal Rommel, and here the Allied invasion of France faced its greatest crisis. (Army Art Collection) The War in Europe The War in Europe World War I left unresolved the question of who would dominate Europe. The tremendous dislocations caused by the war laid the groundwork for the collapse of democratic institutions there and set the stage for a second German attempt at conquest. A worldwide de- pression that began in 1929 destroyed the fragile democratic regime in Germany. In 1933 Adolf Hitler led to power the National Social- ist German Workers’ (Nazi) Party, a mass movement that was viru- lently nationalistic, antidemocratic, and anti-Semitic. He ended par- liamentary government, assumed dictatorial powers, and proclaimed the Third Reich. The Nazi government increased the strength of the German armed forces and sought to overturn the Versailles Treaty, to recover German territory lost at th"
+  },
+  {
+    "id": "doc_ww2_5",
+    "text": "orial powers, and proclaimed the Third Reich. The Nazi government increased the strength of the German armed forces and sought to overturn the Versailles Treaty, to recover German territory lost at the peace settlement, and to re- turn to the so-called Fatherland German-speaking minorities within the borders of surrounding countries. The ultimate goal of Hitler’ s policy was to secure “living space” for the German “master race” in eastern Europe. A gambler by instinct, Hitler relied on diplomatic bluff and military innovation to overcome Germany’ s weaknesses. He played skillfully on the divisions among the European powers to gain many of his aims without war. With the Italian Fascist dictator Benito Mussolini he announced a Rome- Berlin alliance (the Axis) in 1935. Meanwhile, in the Far East, the Japanese—the only Asian industrial power—coveted the natural re- sources of China and Southeast Asia, but found their expansion blocked by European colonial powers or by the United States. Ha"
+  },
+  {
+    "id": "doc_ww2_6",
+    "text": "ast, the Japanese—the only Asian industrial power—coveted the natural re- sources of China and Southeast Asia, but found their expansion blocked by European colonial powers or by the United States. Hav- ing seized Manchuria in 1931, they began a war against China in 1937. The League of Nations failed to counter effectively Japanese aggres- sion in Manchuria and an Italian invasion of Ethiopia. Soon Ger- many, Italy, and Japan became allies, facing Western democratic gov- ernments that wanted to avoid another war and the Soviet Union whose Communist government was widely distrusted. The people of the United States, having rejected the Versailles Treaty and the Covenant of the League of Nations after World War I, remained largely indifferent to most international concerns. They firmly discounted the likelihood of American involvement in an- 4 other major war, except perhaps with Japan. Isolationist strength in Congress led to the passage of the Neutrality Act of 1937, making it unlawful "
+  },
+  {
+    "id": "doc_ww2_7",
+    "text": "nted the likelihood of American involvement in an- 4 other major war, except perhaps with Japan. Isolationist strength in Congress led to the passage of the Neutrality Act of 1937, making it unlawful for the United States to trade with belligerents. American policy aimed at continental defense and designated the Navy as the first line of such defense. The Army’ s role was to serve as the nu- cleus of a mass mobilization that would defeat any invaders who managed to ﬁght their way past the Navy and the nation’ s powerful coastal defense installations. The National Defense Act of 1920 al- lowed an Army of 280,000, the largest in peacetime history, but until 1939 Congress never appropriated funds to pay for much more than half of that strength. Most of the funds available for new equip- ment went to the ﬂedgling air corps. Throughout most of the inter- war period, the Army was tiny and insular, filled with hard-bitten, long-serving volunteers scattered in small garrisons throughout the co"
+  },
+  {
+    "id": "doc_ww2_8",
+    "text": "went to the ﬂedgling air corps. Throughout most of the inter- war period, the Army was tiny and insular, filled with hard-bitten, long-serving volunteers scattered in small garrisons throughout the continental United States, Hawaii, the Philippines, and Panama. Yet some innovative thinking and preparation for the future took place in the interwar Army. Experiments with armored vehicles and motorization, air-ground cooperation, and the aerial transport of troops came to nothing for lack of resources and of consistent high- level support. The Army did, however, develop an interest in am- phibious warfare and in related techniques that were then being pi- oneered by the U.S. Marine Corps. By the outbreak of war the Signal Corps was a leader in improving radio communications, and Amer- ican artillery practiced the most sophisticated ﬁre-direction and -con- trol techniques in the world. In addition, war plans for various con- tingencies had been drawn up, as had industrial and manpower mobi"
+  },
+  {
+    "id": "doc_ww2_9",
+    "text": "tillery practiced the most sophisticated ﬁre-direction and -con- trol techniques in the world. In addition, war plans for various con- tingencies had been drawn up, as had industrial and manpower mobilization plans. During the early 1930s Col. George C. Marshall, assistant commandant of the Infantry School at Fort Benning, Geor- gia, had earmarked a number of younger ofﬁcers for leadership po- sitions. Despite such preparations, the Army as a whole was unready for the war that broke out in Europe on 1 September 1939. The Outbreak of W ar During March 1938 German troops had occupied Austria, in- corporating it into the Reich. In September Hitler announced that the “oppression” of ethnic Germans living in Czechoslovakia was in- tolerable and that war was near. England and France met with Hitler (the Munich Pact) and compelled Czechoslovakia to cede its frontier districts to Germany in order to secure “peace in our time.” Peace, however, was only an illusion. During March 1939 Hitler seiz"
+  }
+]
