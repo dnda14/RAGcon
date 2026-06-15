@@ -22,17 +22,17 @@ NEO4J_PASSWORD = "password"
 
 def coseno_similitud(v1, v2):
     """Calcula la similitud coseno matemática entre dos vectores numpy."""
-    dot_product = np.dot(v1, v2)
+    producto_punto = np.dot(v1, v2)
     norm_v1 = np.linalg.norm(v1)
     norm_v2 = np.linalg.norm(v2)
     if norm_v1 == 0 or norm_v2 == 0:
         return 0.0
-    return dot_product / (norm_v1 * norm_v2)
+    return producto_punto / (norm_v1 * norm_v2)
 
 class MotorBusqueda:
     def __init__(self):
         print("Cargando modelo de Embeddings (all-MiniLM-L6-v2)...")
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.modelo = SentenceTransformer('all-MiniLM-L6-v2')
         
         print("Conectando a ChromaDB...")
         self.chroma_client = chromadb.PersistentClient(path=CHROMA_DB_DIR)
@@ -47,7 +47,7 @@ class MotorBusqueda:
 
     def find_nodos_semilla(self, query_text, n_semillas=2):
         """Paso 1: Busca múltiples nodos de entrada en el espacio semántico de ChromaDB."""
-        pregunta_emb = self.model.encode(query_text).tolist()
+        pregunta_emb = self.modelo.encode(query_text).tolist()
         results = self.collection.query(
             query_embeddings=[pregunta_emb],
             n_results=n_semillas
@@ -58,7 +58,7 @@ class MotorBusqueda:
                 if meta and 'nombre_sujeto' in meta:
                     semillas.append(meta['nombre_sujeto'])
         return semillas, pregunta_emb
-    def run_adaptive_bfs(self, seed_node, pregunta_emb, k, theta):
+    def run_bfs(self, seed_node, pregunta_emb, k, theta):
         """Pasos 2 a 5: Ejecuta el recorrido topológico adaptativo en Neo4j."""
         core_edges_ids = set()
         contexto_sent = set()
@@ -125,8 +125,8 @@ def main():
     engine = MotorBusqueda()
     
     # Parámetros de la Malla (Reducidos para prueba rápida)
-    k_values = [1, 2,3,4]
-    theta_values = [0.2, 0.5, 0.8, 1.0]
+    k_valores = [1, 2,3,4]
+    theta_valores = [0.2, 0.5, 0.8, 1.0]
     
     resultados = []
     
@@ -142,7 +142,7 @@ def main():
         pregunta = item.get("question", "")
         print(f"\n[Q {i+1}] {pregunta}")
         
-        pregunta_emb = engine.model.encode(pregunta).tolist()
+        pregunta_emb = engine.modelo.encode(pregunta).tolist()
         seed_nodes = set()
         
         # 1A. Buscar semillas usando la pregunta completa (para contextos largos)
@@ -155,7 +155,7 @@ def main():
         # 1B. Buscar semillas usando las entidades extraídas por el LLM (para francotirador específico)
         entities = llm_entities.get(q_id, [])
         for ent in entities:
-            ent_emb = engine.model.encode(ent).tolist()
+            ent_emb = engine.modelo.encode(ent).tolist()
             res_ent = engine.collection.query(query_embeddings=[ent_emb], n_results=1)
             if res_ent['metadatas'] and len(res_ent['metadatas'][0]) > 0:
                 for meta in res_ent['metadatas'][0]:
@@ -171,11 +171,11 @@ def main():
         print(f"  -> Nodos Semilla: {seed_nodes}")
         
         # 2. Iterar la malla
-        for k in k_values:
-            for theta in theta_values:
+        for k in k_valores:
+            for theta in theta_valores:
                 contextos_combinados = set()
                 for seed_node in seed_nodes:
-                    contexto_parcial = engine.run_adaptive_bfs(seed_node, pregunta_emb, k, theta)
+                    contexto_parcial = engine.run_bfs(seed_node, pregunta_emb, k, theta)
                     # Evitar duplicar oraciones
                     if contexto_parcial:
                         for sentence in contexto_parcial.split(". "):

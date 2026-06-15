@@ -16,10 +16,10 @@ print("2. Preparando variables (CON Embeddings y Objetivo Combinado)...")
 y = df['k'] + df['theta']
 
 # Eliminar SOLO las columnas que no son características (MANTENEMOS los embeddings)
-drop_cols = ['q_id', 'k', 'theta']
+cols_eliminar = ['q_id', 'k', 'theta']
 
 # Matriz de características X
-X = df.drop(columns=drop_cols)
+X = df.drop(columns=cols_eliminar)
 
 print(f"Dimensiones de X (con embeddings): {X.shape}")
 

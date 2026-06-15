@@ -20,10 +20,10 @@ NEO4J_PASSWORD = "password"
 LIMPIAR_DB = True
 COLECCION_S = "coleccion-sujetos"
 
-def init_modelos():
+def init_modelo_embeddings():
     print("Cargando modelo de Embeddings (all-MiniLM-L6-v2)...")
-    modelo = SentenceTransformer('all-MiniLM-L6-v2')
-    return modelo
+    modelo_embedding = SentenceTransformer('all-MiniLM-L6-v2')
+    return modelo_embedding
 
 def crear_coleccion_vector():
     print("Conectando a ChromaDB...")
@@ -70,7 +70,7 @@ def load_json(filepath):
     print(f"Cargados {len(objs)} fragmentos ")
     return objs
 
-def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
+def insertar_datos(driver, coleccion_vector_db, modelo_embedding, fragmentos):
     sujetos_procesados = set()
     
     # 1. Recolectar datos
@@ -110,7 +110,7 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
                 "descripcion": descripcion, "fragmento_id": fragmento_id
             })
             
-    # Función de ayuda para dividir en pedazos pequeños (chunks)
+    # Función de ayuda para dividir en pedazos pequeños
     def chunker(seq, size):
         return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
@@ -120,7 +120,10 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
         print(f"Generando embeddings de {len(nombres_sujetos)} sujetos en bloques de 32 (para no congelar la PC)...")
         
         for chunk_nombres in chunker(nombres_sujetos, 32):
-            emb_sujetos = modelo.encode(chunk_nombres, batch_size=8).tolist()
+            #----------------------------------------------------------------------------------------
+            emb_sujetos = modelo_embedding.encode(chunk_nombres, batch_size=8).tolist()
+            #----------------------------------------------------------------------------------------
+            
             ids = []
             metadatas = []
             for suj in chunk_nombres:
@@ -128,11 +131,13 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
                 ids.append(suj_id)
                 metadatas.append({"nombre_sujeto": suj, "fragmento_id": sujetos_a_insertar[suj]})
                 sujetos_procesados.add(suj)
-                
+            #----------------------------------------------------------------------------------------
+            
             try:
                 coleccion_vector_db.add(ids=ids, embeddings=emb_sujetos, metadatas=metadatas, documents=chunk_nombres)
             except Exception as e:
                 print(f"[Chroma Error] No se guardaron los sujetos: {e}")
+            #----------------------------------------------------------------------------------------
             
             # PAUSA de 0.1 segundos para que Windows refresque la pantalla y no tire pantallazo azul
             time.sleep(0.1)
@@ -145,11 +150,16 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
             for chunk_idx, chunk_tripletas in enumerate(chunker(tripletas_a_insertar, 32)):
                 print(f"  -> Procesando bloque {chunk_idx + 1}...")
                 descripciones = [t["descripcion"] for t in chunk_tripletas]
-                emb_descripciones = modelo.encode(descripciones, batch_size=8).tolist()
-                
+            #----------------------------------------------------------------------------------------
+
+                emb_descripciones = modelo_embedding.encode(descripciones, batch_size=8).tolist()
+            #----------------------------------------------------------------------------------------
+            #----------------------------------------------------------------------------------------
+            
                 # Transacción pequeña por bloque
                 with sesion.begin_transaction() as tx:
                     for idx, t in enumerate(chunk_tripletas):
+                        
                         try:
                             tx.run(
                                 CREATE_TRIPLET_QUERY,
@@ -159,7 +169,8 @@ def insertar_datos(driver, coleccion_vector_db, modelo, fragmentos):
                             )
                         except Exception as e:
                             pass
-                
+            #----------------------------------------------------------------------------------------
+             
                 # PAUSA de 0.1 segundos para que la GPU respire y la pantalla no se congele
                 time.sleep(0.1)
                     
@@ -170,7 +181,7 @@ def main():
         print(f"Error: No se encontró el archivo de tripletas {FILE_TRIPLETAS}")
         return
         
-    modelo = init_modelos()
+    modelo_embedding = init_modelo_embeddings()
     coleccion_vector_db = crear_coleccion_vector()
     
     try:
@@ -189,7 +200,7 @@ def main():
 
     try:
         fragmentos = load_json(FILE_TRIPLETAS)
-        insertar_datos(driver, coleccion_vector_db, modelo, fragmentos)
+        insertar_datos(driver, coleccion_vector_db, modelo_embedding, fragmentos)
     except Exception as e:
         print(f"Error durante la ingesta: {e}")
     finally:

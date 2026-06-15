@@ -8,7 +8,7 @@ except OSError:
     subprocess.check_call(["python", "-m", "spacy", "download", "en_core_web_sm"])
     nlp = spacy.load("en_core_web_sm")
 
-def extra_entidades_spacy(pregunta):
+def extraer_entidades_spacy(pregunta):
     """
     Extrae entidades nombradas y sustantivos principales de una pregunta.
     Es determinista y ligero. Funciona offline.

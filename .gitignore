@@ -143,7 +143,7 @@ test_imports.py
 train_xgboost.py
 train_xgb_no_emb.py
 rag_src/entrenar_xgboost.py
-rag_src/feature_engineering.py
+rag_src/generate_training_data.py
 
 # Utilidades de Datos Temporales
 clean_qa.py

@@ -1,71 +1,105 @@
 import pandas as pd
+import numpy as np
 import spacy
-from sklearn.feature_extraction.text import TfidfVectorizer
-import pickle
 import os
+from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+import warnings
+warnings.filterwarnings('ignore')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS_DIR = os.path.join(BASE_DIR, 'models')
 
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    print("Error: No se encontró el modelo de spaCy. Ejecuta: python -m spacy download en_core_web_sm")
-    nlp = None
+print("Cargando el dataset...")
+input_path = os.path.join(BASE_DIR, 'optimal_params_ALL.csv')
+df = pd.read_csv(input_path)
 
-def get_spacy_features(text):
-    """Extrae características numéricas de un texto usando spaCy."""
-    if not nlp:
-        return 0, 0, 0
+print("Cargando modelo SpaCy...")
+nlp = spacy.load("en_core_web_sm")
+
+print("Cargando modelo de Embeddings...")
+modelo_emdedding = SentenceTransformer('all-MiniLM-L6-v2')
+
+print("Calculando TF-IDF del corpus...")
+vectorizer = TfidfVectorizer(stop_words='english')
+tfidf_matriz = vectorizer.fit_transform(df['question'].tolist())
+feature_nombres = vectorizer.get_feature_nombres_out()
+
+# Extraer características
+print("Extrayendo características lingüísticas y semánticas...")
+
+features_lista = []
+embeddings_list = []
+
+for idx, row in df.iterrows():
+    q_text = str(row['question'])
     
-    doc = nlp(text)
-    len_chars = len(text)
-    num_entities = len(doc.ents)
+    # --- 1. SpaCy Features ---
+    doc = nlp(q_text)
+    num_nouns = sum(1 for token in doc if token.pos_ == "NOUN")
+    num_propn = sum(1 for token in doc if token.pos_ == "PROPN")
     num_verbs = sum(1 for token in doc if token.pos_ == "VERB")
+    num_adj = sum(1 for token in doc if token.pos_ == "ADJ")
+    num_ents = len(doc.ents)
     
-    return len_chars, num_entities, num_verbs
+    # --- 2. Estructural Features ---
+    char_len = len(q_text)
+    word_len = len(q_text.split())
+    avg_word_len = char_len / word_len if word_len > 0 else 0
+    
+    # --- 3. Intent/Wh-words ---
+    q_lower = q_text.lower()
+    is_who = 1 if q_lower.startswith("who") else 0
+    is_what = 1 if q_lower.startswith("what") else 0
+    is_where = 1 if q_lower.startswith("where") else 0
+    is_when = 1 if q_lower.startswith("when") else 0
+    is_why = 1 if q_lower.startswith("why") else 0
+    is_how = 1 if q_lower.startswith("how") else 0
+    
+    # --- 4. TF-IDF Rareness ---
+    # Obtenemos el vector tfidf de esta pregunta
+    tfidf_row = tfidf_matriz[idx].toarray()[0]
+    # La máxima puntuación tfidf indica qué tan "rara" es la palabra más única de esta pregunta
+    max_tfidf = np.max(tfidf_row) if np.max(tfidf_row) > 0 else 0
+    avg_tfidf = np.mean(tfidf_row[tfidf_row > 0]) if len(tfidf_row[tfidf_row > 0]) > 0 else 0
 
-def extract_features_training(df, text_column='Pregunta'):
-    """Extrae características para entrenamiento y ajusta el TF-IDF."""
-    print("Extrayendo características lingüísticas (spaCy)...")
-    
-    # 1. Características manuales
-    df['len_chars'], df['num_entities'], df['num_verbs'] = zip(*df[text_column].apply(get_spacy_features))
-    
-    # 2. Vectorización TF-IDF
-    print("Vectorizando texto (TF-IDF)...")
-    tfidf = TfidfVectorizer(max_features=50, stop_words=None) # Reducido a 50 para el corpus pequeño
-    tfidf_matrix = tfidf.fit_transform(df[text_column]).toarray()
-    
-    # Guardar el vectorizador TF-IDF para usarlo en inferencia luego
-    if not os.path.exists(MODELS_DIR):
-        os.makedirs(MODELS_DIR)
-    with open(os.path.join(MODELS_DIR, 'tfidf_vectorizer.pkl'), 'wb') as f:
-        pickle.dump(tfidf, f)
-        
-    # 3. Combinar todo
-    tfidf_df = pd.DataFrame(tfidf_matrix, columns=[f"tfidf_{i}" for i in range(tfidf_matrix.shape[1])])
-    
-    # Unir las características manuales con los vectores TF-IDF
-    X = pd.concat([df[['len_chars', 'num_entities', 'num_verbs']], tfidf_df], axis=1)
-    
-    return X, tfidf
+    features_lista.append({
+        'q_id': row['q_id'],
+        'k': row['k'],
+        'theta': row['theta'],
+        'num_nouns': num_nouns,
+        'num_propn': num_propn,
+        'num_verbs': num_verbs,
+        'num_adj': num_adj,
+        'num_ents': num_ents,
+        'char_len': char_len,
+        'word_len': word_len,
+        'avg_word_len': avg_word_len,
+        'is_who': is_who,
+        'is_what': is_what,
+        'is_where': is_where,
+        'is_when': is_when,
+        'is_why': is_why,
+        'is_how': is_how,
+        'max_tfidf': max_tfidf,
+        'avg_tfidf': avg_tfidf
+    })
 
-def extract_features_inference(text, tfidf_model):
-    """Extrae características de una sola pregunta usando el modelo TF-IDF ya entrenado."""
-    len_chars, num_entities, num_verbs = get_spacy_features(text)
-    
-    tfidf_vector = tfidf_model.transform([text]).toarray()
-    tfidf_df = pd.DataFrame(tfidf_vector, columns=[f"tfidf_{i}" for i in range(tfidf_vector.shape[1])])
-    
-    manual_features = pd.DataFrame([[len_chars, num_entities, num_verbs]], columns=['len_chars', 'num_entities', 'num_verbs'])
-    X = pd.concat([manual_features, tfidf_df], axis=1)
-    
-    return X
+print("Extrayendo Embeddings de todas las preguntas...")
+# Extraer embeddings en bloque para mayor velocidad
+embeddings = modelo_emdedding.encode(df['question'].tolist(), show_progress_bar=True)
 
-if __name__ == "__main__":
-    # Prueba rápida
-    print("Probando módulo de Feature Engineering...")
-    df_test = pd.DataFrame([{"Pregunta": "¿Quién inventó la máquina Enigma?"}])
-    X_test, _ = extract_features_training(df_test)
-    print("Características extraídas:\n", X_test.head())
+print("Ensamblando Dataset Final...")
+# Crear dataframe de características heurísticas
+df_features = pd.DataFrame(features_lista)
+
+# Crear dataframe de embeddings
+emb_cols = [f"emb_{i}" for i in range(embeddings.shape[1])]
+df_embeddings = pd.DataFrame(embeddings, columns=emb_cols)
+
+# Combinar todo
+df_final = pd.concat([df_features, df_embeddings], axis=1)
+
+output_file = os.path.join(BASE_DIR, 'ml_dataset.csv')
+df_final.to_csv(output_file, index=False)
+print(f"\n¡Proceso Terminado! Dataset para ML guardado en {output_file}")
+print(f"Filas: {df_final.shape[0]}, Columnas: {df_final.shape[1]}")
