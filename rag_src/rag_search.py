@@ -20,7 +20,7 @@ NEO4J_URI = "bolt://localhost:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PASSWORD = "password"
 
-def cosine_similarity(v1, v2):
+def coseno_similitud(v1, v2):
     """Calcula la similitud coseno matemática entre dos vectores numpy."""
     dot_product = np.dot(v1, v2)
     norm_v1 = np.linalg.norm(v1)
@@ -29,7 +29,7 @@ def cosine_similarity(v1, v2):
         return 0.0
     return dot_product / (norm_v1 * norm_v2)
 
-class DagRagSearchEngine:
+class MotorBusqueda:
     def __init__(self):
         print("Cargando modelo de Embeddings (all-MiniLM-L6-v2)...")
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -45,23 +45,23 @@ class DagRagSearchEngine:
     def close(self):
         self.driver.close()
 
-    def find_seed_nodes(self, query_text, n_seeds=2):
+    def find_nodos_semilla(self, query_text, n_semillas=2):
         """Paso 1: Busca múltiples nodos de entrada en el espacio semántico de ChromaDB."""
-        query_emb = self.model.encode(query_text).tolist()
+        pregunta_emb = self.model.encode(query_text).tolist()
         results = self.collection.query(
-            query_embeddings=[query_emb],
-            n_results=n_seeds
+            query_embeddings=[pregunta_emb],
+            n_results=n_semillas
         )
-        seeds = []
+        semillas = []
         if results['metadatas'] and len(results['metadatas'][0]) > 0:
             for meta in results['metadatas'][0]:
                 if meta and 'nombre_sujeto' in meta:
-                    seeds.append(meta['nombre_sujeto'])
-        return seeds, query_emb
-    def run_adaptive_bfs(self, seed_node, query_emb, k, theta):
+                    semillas.append(meta['nombre_sujeto'])
+        return semillas, pregunta_emb
+    def run_adaptive_bfs(self, seed_node, pregunta_emb, k, theta):
         """Pasos 2 a 5: Ejecuta el recorrido topológico adaptativo en Neo4j."""
         core_edges_ids = set()
-        context_sentences = set()
+        contexto_sent = set()
         
         with self.driver.session() as session:
             # PASO 2: Expansión Ciega (Niveles 1 a k)
@@ -78,7 +78,7 @@ class DagRagSearchEngine:
                 desc = record["desc"]
                 if desc:
                     core_edges_ids.add(r_id)
-                    context_sentences.add(desc)
+                    contexto_sent.add(desc)
                     
             # PASO 3 y 4: Evaluación de Frontera (Nivel k+1) y Descarte
             if theta > 0.0:
@@ -89,29 +89,27 @@ class DagRagSearchEngine:
                 """
                 result_bound = session.run(query_bound, seed=seed_node)
                 
-                frontier_candidates = {} # rel_id -> (desc, score)
+                frontera = {} # rel_id -> (desc, score)
                 
                 for record in result_bound:
                     r_id = record["rel_id"]
-                    # Evitar procesar aristas que ya fueron alcanzadas en la fase ciega
-                    if r_id not in core_edges_ids and r_id not in frontier_candidates:
+                    
+                    if r_id not in core_edges_ids and r_id not in frontera:
                         emb = record["emb"]
                         desc = record["desc"]
                         if emb and desc:
-                            score = cosine_similarity(query_emb, np.array(emb))
-                            frontier_candidates[r_id] = (desc, float(score))
+                            score = coseno_similitud(pregunta_emb, np.array(emb))
+                            frontera[r_id] = (desc, float(score))
                             
-                if frontier_candidates:
-                    # Ordenar por similitud semántica
-                    sorted_frontier = sorted(frontier_candidates.values(), key=lambda x: x[1], reverse=True)
-                    # Retener el porcentaje dictado por theta
-                    keep_count = int(math.ceil(len(sorted_frontier) * theta))
+                if frontera:
+                    frontera_ordenda = sorted(frontera.values(), key=lambda x: x[1], reverse=True)
+                    contador_kee = int(math.ceil(len(frontera_ordenda) * theta))
                     
-                    for i in range(keep_count):
-                        context_sentences.add(sorted_frontier[i][0])
+                    for i in range(contador_kee):
+                        contexto_sent.add(frontera_ordenda[i][0])
                         
         # PASO 5: Serialización
-        contexto_final = " ".join(list(context_sentences))
+        contexto_final = " ".join(list(contexto_sent))
         return contexto_final
 
 def main():
@@ -124,7 +122,7 @@ def main():
     with open(QA_FILE, 'r', encoding='utf-8') as f:
         qa_data = json.load(f)
         
-    engine = DagRagSearchEngine()
+    engine = MotorBusqueda()
     
     # Parámetros de la Malla (Reducidos para prueba rápida)
     k_values = [1, 2,3,4]
@@ -144,11 +142,11 @@ def main():
         pregunta = item.get("question", "")
         print(f"\n[Q {i+1}] {pregunta}")
         
-        query_emb = engine.model.encode(pregunta).tolist()
+        pregunta_emb = engine.model.encode(pregunta).tolist()
         seed_nodes = set()
         
         # 1A. Buscar semillas usando la pregunta completa (para contextos largos)
-        res_full = engine.collection.query(query_embeddings=[query_emb], n_results=2)
+        res_full = engine.collection.query(query_embeddings=[pregunta_emb], n_results=2)
         if res_full['metadatas'] and len(res_full['metadatas'][0]) > 0:
             for meta in res_full['metadatas'][0]:
                 if meta and 'nombre_sujeto' in meta:
@@ -177,7 +175,7 @@ def main():
             for theta in theta_values:
                 contextos_combinados = set()
                 for seed_node in seed_nodes:
-                    contexto_parcial = engine.run_adaptive_bfs(seed_node, query_emb, k, theta)
+                    contexto_parcial = engine.run_adaptive_bfs(seed_node, pregunta_emb, k, theta)
                     # Evitar duplicar oraciones
                     if contexto_parcial:
                         for sentence in contexto_parcial.split(". "):

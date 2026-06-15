@@ -8,9 +8,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 
 try:
-    nlp = spacy.load("es_core_news_sm")
+    nlp = spacy.load("en_core_web_sm")
 except OSError:
-    print("Error: No se encontró el modelo de spaCy. Ejecuta: python -m spacy download es_core_news_sm")
+    print("Error: No se encontró el modelo de spaCy. Ejecuta: python -m spacy download en_core_web_sm")
     nlp = None
 
 def get_spacy_features(text):

@@ -101,3 +101,56 @@ rag_src/medir_tokens_gemini.py
 rag_src/baseline_naive_rag.py
 
 test_imports.py
+
+# --- Nuevos Archivos Generados (Resultados, Datasets y Logs) ---
+# Resultados de la evaluación exhaustiva y búsqueda de hiperparámetros
+exhaustive_results_*.csv
+optimal_params_*.csv
+
+# Datasets generados y pesados
+ml_dataset.csv
+libro_guerra.pdf
+tripleta_guerra.json
+qa_ww2*.json
+
+# Archivos de salida y logs
+naive_out.txt
+*.log
+
+# Modelos Entrenados (Descomenta si deseas que Git los rastree)
+xgb_model_*.json
+
+Resultados_Evaluacion_Exhaustiva.md
+train_xgboost.py
+train_xgb_no_emb.py
+ML_Metodologia_Entrenamiento.md
+# Scripts de Evaluación, Métricas y Búsqueda de Hiperparámetros
+eval_*.py
+extract_optimal_k_theta.py
+analyze_failures.py
+validate_qa_*.py
+
+# Scripts de Debugging y Exploración
+check_path.py
+check_pruning.py
+debug_regex.py
+find_long_paths.py
+ver_chroma.py
+probar_busqueda.py
+test_imports.py
+
+# Scripts Antiguos / Descartados de Entrenamiento
+train_xgboost.py
+train_xgb_no_emb.py
+rag_src/entrenar_xgboost.py
+rag_src/feature_engineering.py
+
+# Utilidades de Datos Temporales
+clean_qa.py
+merge_and_clean.py
+add_semantic_edges.py
+rag_src/baseline_naive_rag.py
+rag_src/download_datasets.py
+rag_src/medir_tokens_gemini.py
+rag_src/gemini_extractor.py
+
