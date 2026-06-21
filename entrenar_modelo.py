@@ -61,12 +61,12 @@ ejemplos = pd.DataFrame({'Real': y_test.values[:5], 'Predicción': y_pred[:5]})
 print(ejemplos)
 
 print("\n5. Importancia de Variables (Top 10)...")
-feature_importances = pd.DataFrame({
+features_importa = pd.DataFrame({
     'Feature': X.columns,
     'Importance': model.feature_importances_
 }).sort_values(by='Importance', ascending=False)
 
-print(feature_importances.head(10))
+print(features_importa.head(10))
 
-model.save_model("xgb_model_combined_with_emb.json")
-print("\nModelo guardado exitosamente como: xgb_model_combined_with_emb.json")
+model.save_model("xgb_model_saved.json")
+print("\nModelo guardado exitosamente como: xgb_model_saved.json")

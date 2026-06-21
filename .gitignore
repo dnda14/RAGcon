@@ -154,3 +154,6 @@ rag_src/download_datasets.py
 rag_src/medir_tokens_gemini.py
 rag_src/gemini_extractor.py
 
+rag_src/*.txt
+rag_src/*.tex
+

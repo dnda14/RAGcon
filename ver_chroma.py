@@ -22,13 +22,14 @@ def inspeccionar_chroma():
     print(" colección 'coleccion-sujetos':")
     try:
         coleccion = client.get_collection("coleccion-sujetos")
-        resultados = coleccion.get(limit=3, include=["documents", "metadatas"])
+        resultados = coleccion.get(limit=3, include=["documents", "metadatas", "embeddings"])
         
         for i in range(len(resultados['ids'])):
             print(f"\nDocumento {i+1}:")
             print(f" - ID: {resultados['ids'][i]}")
             print(f" - Texto (Sujeto): {resultados['documents'][i]}")
             print(f" - Metadatos: {resultados['metadatas'][i]}")
+            print(f" - Vector (primeros 5 números de 384): {resultados['embeddings'][i][:5]} ...")
             
     except ValueError:
         print("La colección 'coleccion-sujetos' no existe aún.")

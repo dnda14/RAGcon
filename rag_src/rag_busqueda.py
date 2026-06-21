@@ -32,7 +32,7 @@ def coseno_similitud(v1, v2):
 class MotorBusqueda:
     def __init__(self):
         print("Cargando modelo de Embeddings (all-MiniLM-L6-v2)...")
-        self.modelo = SentenceTransformer('all-MiniLM-L6-v2')
+        self.modelo_embedding = SentenceTransformer('all-MiniLM-L6-v2')
         
         print("Conectando a ChromaDB...")
         self.chroma_client = chromadb.PersistentClient(path=CHROMA_DB_DIR)
@@ -47,7 +47,7 @@ class MotorBusqueda:
 
     def find_nodos_semilla(self, query_text, n_semillas=2):
         """Paso 1: Busca múltiples nodos de entrada en el espacio semántico de ChromaDB."""
-        pregunta_emb = self.modelo.encode(query_text).tolist()
+        pregunta_emb = self.modelo_embedding.encode(query_text).tolist()
         results = self.collection.query(
             query_embeddings=[pregunta_emb],
             n_results=n_semillas
@@ -58,10 +58,10 @@ class MotorBusqueda:
                 if meta and 'nombre_sujeto' in meta:
                     semillas.append(meta['nombre_sujeto'])
         return semillas, pregunta_emb
-    def run_bfs(self, seed_node, pregunta_emb, k, theta):
+    def run_bfs(self, nodo_semilla, pregunta_emb, k, theta):
         """Pasos 2 a 5: Ejecuta el recorrido topológico adaptativo en Neo4j."""
         core_edges_ids = set()
-        contexto_sent = set()
+        contexto_oraciones = set()
         
         with self.driver.session() as session:
             # PASO 2: Expansión Ciega (Niveles 1 a k)
@@ -72,31 +72,31 @@ class MotorBusqueda:
             RETURN DISTINCT elementId(r) AS rel_id, r.descripcion AS desc
             """
             
-            result_core = session.run(query_core, seed=seed_node)
-            for record in result_core:
-                r_id = record["rel_id"]
-                desc = record["desc"]
+            result_core = session.run(query_core, seed=nodo_semilla)
+            for registro in result_core:
+                r_id = registro["rel_id"]
+                desc = registro["desc"]
                 if desc:
                     core_edges_ids.add(r_id)
-                    contexto_sent.add(desc)
+                    contexto_oraciones.add(desc)
                     
             # PASO 3 y 4: Evaluación de Frontera (Nivel k+1) y Descarte
             if theta > 0.0:
-                query_bound = f"""
+                query_frontera = f"""
                 MATCH p=(n:Entidad {{nombre: $seed}})-[*{k+1}]-(m:Entidad)
                 UNWIND relationships(p) AS r
                 RETURN DISTINCT elementId(r) AS rel_id, r.descripcion AS desc, r.embedding AS emb
                 """
-                result_bound = session.run(query_bound, seed=seed_node)
+                result_forntera = session.run(query_frontera, seed=nodo_semilla)
                 
                 frontera = {} # rel_id -> (desc, score)
                 
-                for record in result_bound:
-                    r_id = record["rel_id"]
+                for registro in result_forntera:
+                    r_id = registro["rel_id"]
                     
                     if r_id not in core_edges_ids and r_id not in frontera:
-                        emb = record["emb"]
-                        desc = record["desc"]
+                        emb = registro["emb"]
+                        desc = registro["desc"]
                         if emb and desc:
                             score = coseno_similitud(pregunta_emb, np.array(emb))
                             frontera[r_id] = (desc, float(score))
@@ -106,10 +106,10 @@ class MotorBusqueda:
                     contador_kee = int(math.ceil(len(frontera_ordenda) * theta))
                     
                     for i in range(contador_kee):
-                        contexto_sent.add(frontera_ordenda[i][0])
+                        contexto_oraciones.add(frontera_ordenda[i][0])
                         
         # PASO 5: Serialización
-        contexto_final = " ".join(list(contexto_sent))
+        contexto_final = " ".join(list(contexto_oraciones))
         return contexto_final
 
 def main():
@@ -143,14 +143,14 @@ def main():
         print(f"\n[Q {i+1}] {pregunta}")
         
         pregunta_emb = engine.modelo.encode(pregunta).tolist()
-        seed_nodes = set()
+        nodo_semillas = set()
         
         # 1A. Buscar semillas usando la pregunta completa (para contextos largos)
         res_full = engine.collection.query(query_embeddings=[pregunta_emb], n_results=2)
         if res_full['metadatas'] and len(res_full['metadatas'][0]) > 0:
             for meta in res_full['metadatas'][0]:
                 if meta and 'nombre_sujeto' in meta:
-                    seed_nodes.add(meta['nombre_sujeto'])
+                    nodo_semillas.add(meta['nombre_sujeto'])
         
         # 1B. Buscar semillas usando las entidades extraídas por el LLM (para francotirador específico)
         entities = llm_entities.get(q_id, [])
@@ -160,22 +160,22 @@ def main():
             if res_ent['metadatas'] and len(res_ent['metadatas'][0]) > 0:
                 for meta in res_ent['metadatas'][0]:
                     if meta and 'nombre_sujeto' in meta:
-                        seed_nodes.add(meta['nombre_sujeto'])
+                        nodo_semillas.add(meta['nombre_sujeto'])
                         
-        seed_nodes = list(seed_nodes)
+        nodo_semillas = list(nodo_semillas)
         
-        if not seed_nodes:
+        if not nodo_semillas:
             print("  -> No se encontraron nodos semilla en ChromaDB. Saltando...")
             continue
             
-        print(f"  -> Nodos Semilla: {seed_nodes}")
+        print(f"  -> Nodos Semilla: {nodo_semillas}")
         
         # 2. Iterar la malla
         for k in k_valores:
             for theta in theta_valores:
                 contextos_combinados = set()
-                for seed_node in seed_nodes:
-                    contexto_parcial = engine.run_bfs(seed_node, pregunta_emb, k, theta)
+                for nodo_semilla in nodo_semillas:
+                    contexto_parcial = engine.run_bfs(nodo_semilla, pregunta_emb, k, theta)
                     # Evitar duplicar oraciones
                     if contexto_parcial:
                         for sentence in contexto_parcial.split(". "):
@@ -188,7 +188,7 @@ def main():
                 resultados.append({
                     "query_id": q_id,
                     "pregunta": pregunta,
-                    "nodo_semilla": ", ".join(seed_nodes),
+                    "nodo_semilla": ", ".join(nodo_semillas),
                     "k": k,
                     "theta": theta,
                     "longitud_contexto": len(contexto_final),
